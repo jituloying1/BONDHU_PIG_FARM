@@ -1,0 +1,313 @@
+<!-- FULL CODE CONTINUES BELOW THIS LINE -->
+<!-- USE THIS IN A .html FILE -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JP Pig Farm Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; background: #f4f4f4;
+    }
+    .container, .popup, #mainPage {
+      max-width: 500px; margin: 40px auto; background: #fff;
+      padding: 20px; box-shadow: 0 0 10px #aaa;
+    }
+    input, select, button {
+      width: 100%; padding: 10px; margin: 10px 0;
+    }
+    .hidden { display: none; }
+    .btn { background: #28a745; color: white; border: none; cursor: pointer; }
+    .btn:hover { background: #218838; }
+    .popup {
+      position: fixed; top: 10%; left: 50%;
+      transform: translateX(-50%); z-index: 10;
+      background: #fff; padding: 20px;
+      box-shadow: 0 0 10px #444; width: 90%; max-width: 400px;
+    }
+    #overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); display: none; z-index: 5;
+    }
+    table {
+      width: 100%; border-collapse: collapse; text-align: center;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+    }
+    img.thumb {
+      width: 50px; height: 50px; object-fit: cover; border-radius: 4px;
+    }
+    .highlight {
+      background-color: yellow;
+    }
+    .top-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #007bff; color: white; padding: 10px 15px;
+      border-radius: 6px;
+    }
+    .top-bar button {
+      width: auto; padding: 5px 10px; margin: 0 3px;
+      font-size: 14px; background: #fff; color: #007bff;
+      border: 1px solid #007bff; border-radius: 4px;
+    }
+    .top-bar button:hover {
+      background: #007bff; color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div class="container" id="loginBox">
+    <h2>JP Pig Farm Login</h2>
+    <input type="text" id="loginUser" placeholder="Username">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button class="btn" onclick="login()">Login</button>
+    <p><a href="#" onclick="togglePopup('signupPopup')">New User? Register here</a></p>
+  </div>
+
+  <!-- SIGNUP POPUP -->
+  <div id="signupPopup" class="popup hidden">
+    <h3>New User Registration</h3>
+    <input type="text" id="newUser" placeholder="Username">
+    <input type="password" id="newPass" placeholder="Password">
+    <input type="text" id="newEmail" placeholder="Email">
+    <button class="btn" onclick="register()">Register</button>
+    <button onclick="togglePopup('signupPopup')">Close</button>
+  </div>
+
+  <!-- MAIN DASHBOARD -->
+  <div id="mainPage" class="container hidden">
+    <div class="top-bar">
+      <span><strong>🐖 JP Pig Farm Dashboard</strong></span>
+      <div>
+        <button onclick="minimize()">_</button>
+        <button onclick="maximize()">▭</button>
+        <button onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div id="dashboardContent">
+      <button class="btn" onclick="togglePopup('pigFormPopup', true)">➕ Add New Pig</button>
+      <button class="btn" onclick="toggleSection('pigList')">🐷 New Pig List</button>
+      <button class="btn" onclick="togglePopup('sellPopup', true)">💰 Sell Pig</button>
+      <button class="btn" onclick="toggleSection('salesList')">📑 Sell Pig List</button>
+      <button class="btn" onclick="togglePopup('expensePopup', true)">💵 Add Expense</button>
+      <button class="btn" onclick="toggleSection('expenseList')">📋 All Expense</button>
+
+      <!-- Lists (Pigs, Sales, Expense) -->
+      <div id="pigList" class="hidden" style="margin-top: 20px;">
+        <h3>🐖 Pig List</h3>
+        <input type="text" id="searchInput" placeholder="Search Pigs..." onkeyup="filterPigList()" />
+        <table>
+          <thead><tr><th>S.No</th><th>Name</th><th>Weight</th><th>Gender</th><th>Date & Time</th><th>Image</th><th>Action</th></tr></thead>
+          <tbody id="pigTableBody"></tbody>
+        </table>
+      </div>
+
+      <div id="salesList" class="hidden" style="margin-top:20px;">
+        <h3>📑 Sell Pig List</h3>
+        <table>
+          <thead><tr><th>S.No</th><th>Pig</th><th>Buyer</th><th>Price</th><th>Mode</th><th>Date & Time</th><th>Action</th></tr></thead>
+          <tbody id="salesTableBody"></tbody>
+        </table>
+      </div>
+
+      <div id="expenseList" class="hidden" style="margin-top:20px;">
+        <h3>📋 All Expense</h3>
+        <input type="text" id="searchExpense" placeholder="Search Expenses..." onkeyup="filterExpenseList()" />
+        <table>
+          <thead><tr><th>S.No</th><th>Type</th><th>Amount</th><th>Date</th><th>Time</th><th>Action</th></tr></thead>
+          <tbody id="expenseTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUPS -->
+  <div id="pigFormPopup" class="popup hidden">
+    <h3>Add New Pig</h3>
+    <input type="text" id="pigName" placeholder="Pig Name">
+    <input type="number" id="pigWeight" placeholder="Weight (kg)">
+    <select id="pigGender">
+      <option value="">Select Gender</option><option>Male</option><option>Female</option>
+    </select>
+    <input type="file" id="pigImage" accept="image/*">
+    <button class="btn" onclick="addPig()">Save Pig</button>
+    <button onclick="togglePopup('pigFormPopup')">Close</button>
+  </div>
+
+  <div id="sellPopup" class="popup hidden">
+    <h3>Sell Pig</h3>
+    <input type="text" id="sellPigId" placeholder="Pig ID / Name">
+    <input type="text" id="buyerName" placeholder="Buyer Name">
+    <input type="number" id="sellPrice" placeholder="Sell Price">
+    <select id="paymentMode"><option>Cash</option><option>UPI</option><option>Bank Transfer</option></select>
+    <button class="btn" onclick="sellPig()">Save Sale</button>
+    <button onclick="togglePopup('sellPopup')">Close</button>
+  </div>
+
+  <div id="expensePopup" class="popup hidden">
+    <h3>Add Expense</h3>
+    <input type="text" id="expenseType" placeholder="Expense Type (Feed, Medicine...)">
+    <input type="number" id="expenseAmount" placeholder="Amount">
+    <button class="btn" onclick="addExpense()">Save Expense</button>
+    <button onclick="togglePopup('expensePopup')">Close</button>
+  </div>
+
+  <div id="overlay"></div>
+
+  <script>
+    let pigs = JSON.parse(localStorage.getItem("pigs")) || [];
+    let sales = JSON.parse(localStorage.getItem("sales")) || [];
+    let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+    let lastPigQuery = "", lastExpenseQuery = "";
+
+    function togglePopup(id, showOverlay = false) {
+      const el = document.getElementById(id);
+      el.classList.toggle('hidden');
+      document.getElementById('overlay').style.display = el.classList.contains('hidden') || !showOverlay ? 'none' : 'block';
+    }
+
+    function toggleSection(id) {
+      const section = document.getElementById(id);
+      section.classList.toggle("hidden");
+      if (id === 'pigList') filterPigList();
+      else if (id === 'salesList') loadSalesList();
+      else if (id === 'expenseList') loadExpenseList();
+    }
+
+    function login(){
+      const u = document.getElementById('loginUser').value;
+      const p = document.getElementById('loginPass').value;
+      if (u==="Jituloying" && p==="7896"){
+        document.getElementById('loginBox').style.display='none';
+        document.getElementById('mainPage').classList.remove('hidden');
+      } else alert("Login Failed!");
+    }
+    function logout(){
+      document.getElementById('mainPage').classList.add('hidden');
+      document.getElementById('loginBox').style.display = 'block';
+    }
+    function register(){ alert("Registration not implemented."); togglePopup('signupPopup'); }
+    function minimize(){ document.getElementById('dashboardContent').style.display = 'none'; }
+    function maximize(){ document.getElementById('dashboardContent').style.display = 'block'; }
+
+    function addPig(){
+      const n = pigName.value, w = pigWeight.value, g = pigGender.value, f = pigImage.files[0];
+      if(!n || !w || !g || !f){ alert("Fill all pig fields."); return; }
+      const time = new Date().toLocaleString();
+      const r = new FileReader();
+      r.onload = e => {
+        pigs.push({ name: n, weight: w, gender: g, image: e.target.result, time });
+        localStorage.setItem("pigs", JSON.stringify(pigs));
+        togglePopup('pigFormPopup');
+        filterPigList();
+      };
+      r.readAsDataURL(f);
+    }
+    function filterPigList(){
+      lastPigQuery = searchInput.value.toLowerCase();
+      const filtered = pigs.filter(p => p.name.toLowerCase().includes(lastPigQuery) || p.time.toLowerCase().includes(lastPigQuery));
+      loadPigList(filtered);
+    }
+    function loadPigList(list = pigs){
+      pigTableBody.innerHTML = '';
+      list.forEach((p, i) => {
+        pigTableBody.innerHTML += `
+        <tr>
+          <td>${i+1}</td>
+          <td class="${p.name.toLowerCase().includes(lastPigQuery)?'highlight':''}">${p.name}</td>
+          <td>${p.weight}</td><td>${p.gender}</td>
+          <td class="${p.time.toLowerCase().includes(lastPigQuery)?'highlight':''}">${p.time}</td>
+          <td><img src="${p.image}" class="thumb"></td>
+          <td><button class="btn" onclick="printPig(${i})">🖨️ Print</button></td>
+        </tr>`;
+      });
+    }
+    function printPig(i){
+      const p = pigs[i];
+      const w = window.open();
+      w.document.write(`<html><body><h2>🐖 Pig Details</h2>
+        <p><b>Name:</b> ${p.name}</p><p><b>Weight:</b> ${p.weight} kg</p>
+        <p><b>Gender:</b> ${p.gender}</p><p><b>Date:</b> ${p.time}</p>
+        <img src="${p.image}" style="width:150px;height:150px;"/>
+      </body></html>`);
+      w.print(); w.close();
+    }
+
+    function sellPig(){
+      const pigId = sellPigId.value, buyer = buyerName.value, price = sellPrice.value, mode = paymentMode.value;
+      if (!pigId || !buyer || !price) return alert("Fill all sale fields.");
+      const time = new Date().toLocaleString();
+      sales.push({ pig: pigId, buyer, price, mode, time });
+      localStorage.setItem("sales", JSON.stringify(sales));
+      togglePopup('sellPopup');
+      loadSalesList();
+    }
+    function loadSalesList(){
+      salesTableBody.innerHTML = '';
+      sales.forEach((s, i) => {
+        salesTableBody.innerHTML += `
+          <tr><td>${i+1}</td><td>${s.pig}</td><td>${s.buyer}</td>
+          <td>₹${s.price}</td><td>${s.mode}</td><td>${s.time}</td>
+          <td><button class="btn" onclick="printSale(${i})">🖨️ Print</button></td></tr>`;
+      });
+    }
+    function printSale(i){
+      const s = sales[i];
+      const w = window.open();
+      w.document.write(`<pre>🐖 Sale Bill
+Date: ${s.time}
+Pig: ${s.pig}
+Buyer: ${s.buyer}
+Price: ₹${s.price}
+Payment: ${s.mode}</pre>`);
+      w.print(); w.close();
+    }
+
+    function addExpense(){
+      const t = expenseType.value, a = expenseAmount.value;
+      if (!t || !a) return alert("Fill both expense fields.");
+      const now = new Date(), date = now.toLocaleDateString(), time = now.toLocaleTimeString();
+      expenses.push({ type: t, amount: a, date, time });
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+      togglePopup('expensePopup');
+      loadExpenseList();
+    }
+    function filterExpenseList(){
+      lastExpenseQuery = searchExpense.value.toLowerCase();
+      const filtered = expenses.filter(e =>
+        e.type.toLowerCase().includes(lastExpenseQuery) || e.date.toLowerCase().includes(lastExpenseQuery));
+      loadExpenseList(filtered);
+    }
+    function loadExpenseList(list = expenses){
+      expenseTableBody.innerHTML = '';
+      list.forEach((e, i) => {
+        expenseTableBody.innerHTML += `
+        <tr><td>${i+1}</td>
+        <td class="${e.type.toLowerCase().includes(lastExpenseQuery)?'highlight':''}">${e.type}</td>
+        <td>${e.amount}</td>
+        <td class="${e.date.toLowerCase().includes(lastExpenseQuery)?'highlight':''}">${e.date}</td>
+        <td>${e.time}</td>
+        <td><button class="btn" onclick="printExpense(${i})">🖨️ Print</button></td></tr>`;
+      });
+    }
+    function printExpense(i){
+      const e = expenses[i];
+      const w = window.open();
+      w.document.write(`<pre>📋 Expense Record
+Date: ${e.date} ${e.time}
+Type: ${e.type}
+Amount: ₹${e.amount}</pre>`);
+      w.print(); w.close();
+    }
+  </script>
+</body>
+</html>
