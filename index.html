@@ -1,4 +1,4 @@
-<!-- START OF FULL HTML FILE -->
+<!-- FULL CODE WITH EXPENSE FUNCTIONALITY -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -112,23 +112,26 @@
 
   <button class="btn" onclick="togglePopup('pigFormPopup', true)">➕ Add New Pig</button>
   <button class="btn" onclick="toggleSection('pigList')">🐷 Pig List</button>
+
   <button class="btn" onclick="togglePopup('salesFormPopup', true)">💰 Add Sale</button>
   <button class="btn" onclick="toggleSection('salesList')">📄 Sales List</button>
 
+  <button class="btn" onclick="togglePopup('expenseFormPopup', true)">➖ Add Expense</button>
+  <button class="btn" onclick="toggleSection('expenseList')">📋 Expense List</button>
+
   <div id="pigList" class="hidden">
     <h3>🐷 Pig List</h3>
-    <table>
-      <thead><tr><th>#</th><th>Name</th><th>Weight</th><th>Gender</th><th>Time</th><th>Image</th><th>Action</th></tr></thead>
-      <tbody id="pigTableBody"></tbody>
-    </table>
+    <table><thead><tr><th>#</th><th>Name</th><th>Weight</th><th>Gender</th><th>Time</th><th>Image</th><th>Action</th></tr></thead><tbody id="pigTableBody"></tbody></table>
   </div>
 
   <div id="salesList" class="hidden">
     <h3>💰 Sales List</h3>
-    <table>
-      <thead><tr><th>#</th><th>Item</th><th>KG</th><th>Customer</th><th>Price</th><th>Payment</th><th>Time</th><th>Action</th></tr></thead>
-      <tbody id="salesTableBody"></tbody>
-    </table>
+    <table><thead><tr><th>#</th><th>Item</th><th>KG</th><th>Customer</th><th>Price</th><th>Payment</th><th>Time</th><th>Action</th></tr></thead><tbody id="salesTableBody"></tbody></table>
+  </div>
+
+  <div id="expenseList" class="hidden">
+    <h3>📋 Expense List</h3>
+    <table><thead><tr><th>#</th><th>Item</th><th>Qty</th><th>Price</th><th>Payment</th><th>Time</th></tr></thead><tbody id="expenseTableBody"></tbody></table>
   </div>
 </div>
 
@@ -137,9 +140,7 @@
   <h3>Add New Pig</h3>
   <input type="text" id="pigName" placeholder="Pig Name">
   <input type="number" id="pigWeight" placeholder="Weight (kg)">
-  <select id="pigGender">
-    <option value="">Select Gender</option><option>Male</option><option>Female</option>
-  </select>
+  <select id="pigGender"><option value="">Select Gender</option><option>Male</option><option>Female</option></select>
   <input type="file" id="pigImage" accept="image/*">
   <button class="btn" onclick="addPig()">Save Pig</button>
   <button onclick="togglePopup('pigFormPopup')">Close</button>
@@ -151,11 +152,19 @@
   <input type="number" id="saleKg" placeholder="Weight (kg)">
   <input type="text" id="customerName" placeholder="Customer Name">
   <input type="number" id="salePrice" placeholder="Price (₹)">
-  <select id="paymentMode">
-    <option value="">Payment Mode</option><option>Cash</option><option>UPI</option><option>Bank Transfer</option>
-  </select>
+  <select id="paymentMode"><option value="">Payment Mode</option><option>Cash</option><option>UPI</option><option>Bank Transfer</option></select>
   <button class="btn" onclick="addSale()">Save Sale</button>
   <button onclick="togglePopup('salesFormPopup')">Close</button>
+</div>
+
+<div id="expenseFormPopup" class="popup hidden">
+  <h3>Add Expense</h3>
+  <input type="text" id="expenseItem" placeholder="Item Name">
+  <input type="number" id="expenseQty" placeholder="Quantity">
+  <input type="number" id="expensePrice" placeholder="Price (₹)">
+  <select id="expensePayment"><option value="">Payment Mode</option><option>Cash</option><option>UPI</option><option>Bank Transfer</option></select>
+  <button class="btn" onclick="addExpense()">Save Expense</button>
+  <button onclick="togglePopup('expenseFormPopup')">Close</button>
 </div>
 
 <div id="overlay"></div>
@@ -163,25 +172,22 @@
 <script>
   let pigs = JSON.parse(localStorage.getItem("pigs") || "[]");
   let sales = JSON.parse(localStorage.getItem("sales") || "[]");
+  let expenses = JSON.parse(localStorage.getItem("expenses") || "[]");
 
   window.onload = () => {
     if (localStorage.getItem("loggedIn") === "true") {
       loginBox.style.display = "none";
       mainPage.classList.remove("hidden");
-      loadPigList();
-      loadSalesList();
+      loadPigList(); loadSalesList(); loadExpenseList();
     }
   };
 
   function login() {
-    const u = loginUser.value.trim();
-    const p = loginPass.value.trim();
-    if (u === "Jituloying" && p === "7896") {
+    if (loginUser.value === "Jituloying" && loginPass.value === "7896") {
       localStorage.setItem("loggedIn", "true");
       loginBox.style.display = "none";
       mainPage.classList.remove("hidden");
-      loadPigList();
-      loadSalesList();
+      loadPigList(); loadSalesList(); loadExpenseList();
     } else alert("Login Failed!");
   }
 
@@ -191,18 +197,23 @@
     mainPage.classList.add("hidden");
   }
 
+  function togglePopup(id, show = false) {
+    document.getElementById(id).classList.toggle("hidden");
+    overlay.style.display = show ? "block" : "none";
+  }
+
+  function toggleSection(id) {
+    document.getElementById(id).classList.toggle("hidden");
+  }
+
   function addPig() {
     const name = pigName.value.trim(), weight = pigWeight.value, gender = pigGender.value, file = pigImage.files[0];
     if (!name || !weight || !gender || !file) return alert("Fill all fields");
     const reader = new FileReader();
-    reader.onload = function (e) {
-      const image = e.target.result;
-      const time = new Date().toLocaleString();
-      const data = { name, weight, gender, image, time };
-      pigs.push(data);
+    reader.onload = e => {
+      pigs.push({ name, weight, gender, image: e.target.result, time: new Date().toLocaleString() });
       localStorage.setItem("pigs", JSON.stringify(pigs));
-      loadPigList();
-      togglePopup('pigFormPopup');
+      loadPigList(); togglePopup('pigFormPopup');
     };
     reader.readAsDataURL(file);
   }
@@ -210,63 +221,52 @@
   function loadPigList() {
     pigTableBody.innerHTML = '';
     pigs.forEach((p, i) => {
-      pigTableBody.innerHTML += `<tr>
-        <td>${i + 1}</td><td>${p.name}</td><td>${p.weight}</td><td>${p.gender}</td><td>${p.time}</td>
-        <td><img src="${p.image}" class="thumb"></td>
-        <td><button class="btn" onclick="printPig(${i})">🖨️</button></td>
-      </tr>`;
+      pigTableBody.innerHTML += `<tr><td>${i+1}</td><td>${p.name}</td><td>${p.weight}</td><td>${p.gender}</td><td>${p.time}</td><td><img src="${p.image}" class="thumb"></td><td><button class="btn" onclick="printPig(${i})">🖨️</button></td></tr>`;
     });
   }
 
   function printPig(i) {
     const p = pigs[i];
     const w = window.open();
-    w.document.write(`<h2>Pig Details</h2>
-      <p>Name: ${p.name}</p><p>Weight: ${p.weight}</p><p>Gender: ${p.gender}</p><p>Time: ${p.time}</p>
-      <img src="${p.image}" width="150"/>`);
+    w.document.write(`<h2>Pig Details</h2><p>Name: ${p.name}</p><p>Weight: ${p.weight}</p><p>Gender: ${p.gender}</p><p>Time: ${p.time}</p><img src="${p.image}" width="150"/>`);
     w.print(); w.close();
   }
 
   function addSale() {
-    const item = saleItem.value.trim(), kg = saleKg.value.trim(), customer = customerName.value.trim();
-    const price = salePrice.value.trim(), mode = paymentMode.value;
+    const item = saleItem.value, kg = saleKg.value, customer = customerName.value, price = salePrice.value, mode = paymentMode.value;
     if (!item || !kg || !customer || !price || !mode) return alert("Fill all fields");
-    const time = new Date().toLocaleString();
-    const data = { item, kg, customer, price, mode, time };
-    sales.push(data);
+    sales.push({ item, kg, customer, price, mode, time: new Date().toLocaleString() });
     localStorage.setItem("sales", JSON.stringify(sales));
-    loadSalesList();
-    togglePopup('salesFormPopup');
+    loadSalesList(); togglePopup('salesFormPopup');
   }
 
   function loadSalesList() {
     salesTableBody.innerHTML = '';
     sales.forEach((s, i) => {
-      salesTableBody.innerHTML += `<tr>
-        <td>${i + 1}</td><td>${s.item}</td><td>${s.kg}</td><td>${s.customer}</td>
-        <td>₹${s.price}</td><td>${s.mode}</td><td>${s.time}</td>
-        <td><button class="btn" onclick="printSale(${i})">🖨️</button></td>
-      </tr>`;
+      salesTableBody.innerHTML += `<tr><td>${i+1}</td><td>${s.item}</td><td>${s.kg}</td><td>${s.customer}</td><td>₹${s.price}</td><td>${s.mode}</td><td>${s.time}</td><td><button class="btn" onclick="printSale(${i})">🖨️</button></td></tr>`;
     });
   }
 
   function printSale(i) {
     const s = sales[i];
     const w = window.open();
-    w.document.write(`<h2>Sale Receipt</h2>
-      <p>Item: ${s.item}</p><p>Weight: ${s.kg} kg</p><p>Customer: ${s.customer}</p>
-      <p>Price: ₹${s.price}</p><p>Payment Mode: ${s.mode}</p><p>Time: ${s.time}</p>`);
+    w.document.write(`<h2>Sale Receipt</h2><p>Item: ${s.item}</p><p>Weight: ${s.kg} kg</p><p>Customer: ${s.customer}</p><p>Price: ₹${s.price}</p><p>Payment: ${s.mode}</p><p>Time: ${s.time}</p>`);
     w.print(); w.close();
   }
 
-  function togglePopup(id, showOverlay = false) {
-    const el = document.getElementById(id);
-    el.classList.toggle('hidden');
-    overlay.style.display = showOverlay ? 'block' : 'none';
+  function addExpense() {
+    const item = expenseItem.value, qty = expenseQty.value, price = expensePrice.value, payment = expensePayment.value;
+    if (!item || !qty || !price || !payment) return alert("Fill all fields");
+    expenses.push({ item, qty, price, payment, time: new Date().toLocaleString() });
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+    loadExpenseList(); togglePopup('expenseFormPopup');
   }
 
-  function toggleSection(id) {
-    document.getElementById(id).classList.toggle("hidden");
+  function loadExpenseList() {
+    expenseTableBody.innerHTML = '';
+    expenses.forEach((e, i) => {
+      expenseTableBody.innerHTML += `<tr><td>${i+1}</td><td>${e.item}</td><td>${e.qty}</td><td>₹${e.price}</td><td>${e.payment}</td><td>${e.time}</td></tr>`;
+    });
   }
 </script>
 
