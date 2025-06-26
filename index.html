@@ -186,163 +186,159 @@
   <div id="overlay"></div>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzDzY9woNUqZz0GdpjaTbPn58-l28mSRsP1RiEjuu3zvp-XQxp7681-ERTbWBrmOTX2/exec";
+    <!-- JP Pig Farm Management - SYNCHRONIZED VERSION -->
+<!-- 1. Replace your current JS section with the script below -->
+<!-- 2. Make sure your Apps Script has working doPost() and doGet() handlers -->
 
-    let pigs = JSON.parse(localStorage.getItem("pigs") || "[]");
-    let sales = JSON.parse(localStorage.getItem("sales") || "[]");
-    let expenses = JSON.parse(localStorage.getItem("expenses") || "[]");
+<script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbzDzY9woNUqZz0GdpjaTbPn58-l28mSRsP1RiEjuu3zvp-XQxp7681-ERTbWBrmOTX2/exec";
 
-    window.onload = () => {
-      if (localStorage.getItem("loggedIn") === "true") {
-        loginBox.style.display = "none";
-        mainPage.classList.remove("hidden");
-      }
-    };
+let pigs = [], sales = [], expenses = [];
 
-    function login() {
-      const u = loginUser.value, p = loginPass.value;
-      if (u === "Jituloying" && p === "7896") {
-        localStorage.setItem("loggedIn", "true");
-        loginBox.style.display = "none";
-        mainPage.classList.remove("hidden");
-      } else {
-        alert("Login Failed!");
-      }
-    }
+window.onload = () => {
+  if (localStorage.getItem("loggedIn") === "true") {
+    loginBox.style.display = "none";
+    mainPage.classList.remove("hidden");
+    fetchData();
+  }
+};
 
-    function logout() {
-      localStorage.removeItem("loggedIn");
-      mainPage.classList.add("hidden");
-      loginBox.style.display = "block";
-    }
+function login() {
+  const u = loginUser.value, p = loginPass.value;
+  if (u === "Jituloying" && p === "7896") {
+    localStorage.setItem("loggedIn", "true");
+    loginBox.style.display = "none";
+    mainPage.classList.remove("hidden");
+    fetchData();
+  } else {
+    alert("Login Failed!");
+  }
+}
 
-    function minimize() { dashboardContent.style.display = 'none'; }
-    function maximize() { dashboardContent.style.display = 'block'; }
+function logout() {
+  localStorage.removeItem("loggedIn");
+  mainPage.classList.add("hidden");
+  loginBox.style.display = "block";
+}
 
-    function togglePopup(id, showOverlay = false) {
-      document.getElementById(id).classList.toggle("hidden");
-      overlay.style.display = showOverlay ? 'block' : 'none';
-    }
+function fetchData() {
+  fetch(`${scriptURL}?sheet=Pigs`).then(res => res.json()).then(data => { pigs = data; loadPigList(); });
+  fetch(`${scriptURL}?sheet=Sales`).then(res => res.json()).then(data => { sales = data; loadSales(); });
+  fetch(`${scriptURL}?sheet=Expenses`).then(res => res.json()).then(data => { expenses = data; loadExpenses(); });
+}
 
-    function toggleSection(id) {
-      document.getElementById(id).classList.toggle("hidden");
-      if (id === 'pigList') loadPigList();
-      if (id === 'salesList') loadSales();
-      if (id === 'expenseList') loadExpenses();
-    }
+function addPig() {
+  const name = pigName.value, weight = pigWeight.value, gender = pigGender.value;
+  const file = pigImage.files[0];
+  if (!name || !weight || !gender || !file) return alert("All fields required");
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const image = e.target.result;
+    const time = new Date().toLocaleString();
+    const data = { time, name, weight, gender, image };
+    fetch(`${scriptURL}?sheet=Pigs`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: { "Content-Type": "application/json" }
+    }).then(() => fetchData());
+    togglePopup('pigFormPopup');
+  };
+  reader.readAsDataURL(file);
+}
 
-    function addPig() {
-      const name = pigName.value, weight = pigWeight.value, gender = pigGender.value;
-      const file = pigImage.files[0];
-      if (!name || !weight || !gender || !file) return alert("All fields required");
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const image = e.target.result;
-        const time = new Date().toLocaleString();
-        pigs.push({ name, weight, gender, image, time });
-        localStorage.setItem("pigs", JSON.stringify(pigs));
-        togglePopup('pigFormPopup');
-        loadPigList();
-        fetch(`${scriptURL}?sheet=Pigs`, {
-          method: "POST",
-          body: JSON.stringify({ name, weight, gender, image }),
-          headers: { "Content-Type": "application/json" }
-        });
-      };
-      reader.readAsDataURL(file);
-    }
+function sellPig() {
+  const pig = sellPigId.value, buyer = buyerName.value, price = sellPrice.value, mode = paymentMode.value;
+  if (!pig || !buyer || !price) return alert("All fields required");
+  const time = new Date().toLocaleString();
+  const data = { time, pig, buyer, price, mode };
+  fetch(`${scriptURL}?sheet=Sales`, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" }
+  }).then(() => fetchData());
+  togglePopup('sellPopup');
+}
 
-    function sellPig() {
-      const pig = sellPigId.value, buyer = buyerName.value, price = sellPrice.value, mode = paymentMode.value;
-      if (!pig || !buyer || !price) return alert("All fields required");
-      const time = new Date().toLocaleString();
-      sales.push({ pig, buyer, price, mode, time });
-      localStorage.setItem("sales", JSON.stringify(sales));
-      togglePopup('sellPopup');
-      loadSales();
-      fetch(`${scriptURL}?sheet=Sales`, {
-        method: "POST",
-        body: JSON.stringify({ pig, buyer, price, mode }),
-        headers: { "Content-Type": "application/json" }
-      });
-    }
+function addExpense() {
+  const type = expenseType.value, amount = expenseAmount.value;
+  const now = new Date(), date = now.toLocaleDateString(), time = now.toLocaleTimeString();
+  if (!type || !amount) return alert("Fill all fields");
+  const data = { time: `${date} ${time}`, type, amount };
+  fetch(`${scriptURL}?sheet=Expenses`, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" }
+  }).then(() => fetchData());
+  togglePopup('expensePopup');
+}
 
-    function addExpense() {
-      const type = expenseType.value, amount = expenseAmount.value;
-      const now = new Date(), date = now.toLocaleDateString(), time = now.toLocaleTimeString();
-      if (!type || !amount) return alert("Fill all fields");
-      expenses.push({ type, amount, date, time });
-      localStorage.setItem("expenses", JSON.stringify(expenses));
-      togglePopup('expensePopup');
-      loadExpenses();
-      fetch(`${scriptURL}?sheet=Expenses`, {
-        method: "POST",
-        body: JSON.stringify({ type, amount }),
-        headers: { "Content-Type": "application/json" }
-      });
-    }
+function togglePopup(id, showOverlay = false) {
+  document.getElementById(id).classList.toggle("hidden");
+  overlay.style.display = showOverlay ? 'block' : 'none';
+}
 
-    function loadPigList() {
-      pigTableBody.innerHTML = '';
-      pigs.forEach((p, i) => {
-        pigTableBody.innerHTML += `<tr>
-          <td>${i+1}</td><td>${p.name}</td><td>${p.weight}</td><td>${p.gender}</td>
-          <td>${p.time}</td><td><img src="${p.image}" class="thumb"></td>
-          <td><button class="btn" onclick="printPig(${i})">🖨️</button></td>
-        </tr>`;
-      });
-    }
+function toggleSection(id) {
+  document.getElementById(id).classList.toggle("hidden");
+  if (id === 'pigList') loadPigList();
+  if (id === 'salesList') loadSales();
+  if (id === 'expenseList') loadExpenses();
+}
 
-    function printPig(i) {
-      const p = pigs[i];
-      const w = window.open();
-      w.document.write(`<h2>Pig Details</h2><p>Name: ${p.name}</p><p>Weight: ${p.weight}</p><p>Gender: ${p.gender}</p><p>Time: ${p.time}</p><img src="${p.image}" width="150"/>`);
-      w.print(); w.close();
-    }
+function loadPigList() {
+  pigTableBody.innerHTML = '';
+  pigs.forEach((p, i) => {
+    pigTableBody.innerHTML += `<tr>
+      <td>${i+1}</td><td>${p.name}</td><td>${p.weight}</td><td>${p.gender}</td>
+      <td>${p.time}</td><td><img src="${p.image}" class="thumb"></td>
+      <td><button class="btn" onclick="printPig(${i})">🖨️</button></td>
+    </tr>`;
+  });
+}
 
-    function loadSales() {
-      salesTableBody.innerHTML = '';
-      sales.forEach((s, i) => {
-        salesTableBody.innerHTML += `<tr>
-          <td>${i+1}</td><td>${s.pig}</td><td>${s.buyer}</td><td>₹${s.price}</td>
-          <td>${s.mode}</td><td>${s.time}</td>
-          <td><button class="btn" onclick="printSale(${i})">🖨️</button></td>
-        </tr>`;
-      });
-    }
+function loadSales() {
+  salesTableBody.innerHTML = '';
+  sales.forEach((s, i) => {
+    salesTableBody.innerHTML += `<tr>
+      <td>${i+1}</td><td>${s.pig}</td><td>${s.buyer}</td><td>₹${s.price}</td>
+      <td>${s.mode}</td><td>${s.time}</td>
+      <td><button class="btn" onclick="printSale(${i})">🖨️</button></td>
+    </tr>`;
+  });
+}
 
-    function printSale(i) {
-      const s = sales[i];
-      const w = window.open();
-      w.document.write(`<pre>🐖 Sale Receipt
-Date: ${s.time}
-Pig: ${s.pig}
-Buyer: ${s.buyer}
-Price: ₹${s.price}
-Payment: ${s.mode}</pre>`);
-      w.print(); w.close();
-    }
+function loadExpenses() {
+  expenseTableBody.innerHTML = '';
+  expenses.forEach((e, i) => {
+    expenseTableBody.innerHTML += `<tr>
+      <td>${i+1}</td><td>${e.type}</td><td>₹${e.amount}</td>
+      <td colspan="2">${e.time}</td>
+      <td><button class="btn" onclick="printExpense(${i})">🖨️</button></td>
+    </tr>`;
+  });
+}
 
-    function loadExpenses() {
-      expenseTableBody.innerHTML = '';
-      expenses.forEach((e, i) => {
-        expenseTableBody.innerHTML += `<tr>
-          <td>${i+1}</td><td>${e.type}</td><td>₹${e.amount}</td>
-          <td>${e.date}</td><td>${e.time}</td>
-          <td><button class="btn" onclick="printExpense(${i})">🖨️</button></td>
-        </tr>`;
-      });
-    }
+function printPig(i) {
+  const p = pigs[i];
+  const w = window.open();
+  w.document.write(`<h2>Pig Details</h2><p>Name: ${p.name}</p><p>Weight: ${p.weight}</p><p>Gender: ${p.gender}</p><p>Time: ${p.time}</p><img src="${p.image}" width="150"/>`);
+  w.print(); w.close();
+}
 
-    function printExpense(i) {
-      const e = expenses[i];
-      const w = window.open();
-      w.document.write(`<pre>📋 Expense Receipt
-Date: ${e.date} ${e.time}
-Type: ${e.type}
-Amount: ₹${e.amount}</pre>`);
-      w.print(); w.close();
-    }
+function printSale(i) {
+  const s = sales[i];
+  const w = window.open();
+  w.document.write(`<pre>🐖 Sale Receipt\nDate: ${s.time}\nPig: ${s.pig}\nBuyer: ${s.buyer}\nPrice: ₹${s.price}\nPayment: ${s.mode}</pre>`);
+  w.print(); w.close();
+}
+
+function printExpense(i) {
+  const e = expenses[i];
+  const w = window.open();
+  w.document.write(`<pre>📋 Expense Receipt\nDate/Time: ${e.time}\nType: ${e.type}\nAmount: ₹${e.amount}</pre>`);
+  w.print(); w.close();
+}
+</script>
+
   </script>
 </body>
 </html>
