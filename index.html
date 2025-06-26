@@ -99,9 +99,108 @@
       color: white;
     }
   </style>
-</head>
+   
 <body>
-  <!-- HTML content remains the same above -->
+  <!-- Login Box -->
+  <div class="container" id="loginBox">
+    <h2>JP Pig Farm Login</h2>
+    <input type="text" id="loginUser" placeholder="Username">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button class="btn" onclick="login()">Login</button>
+    <p><a href="#" onclick="togglePopup('signupPopup')">New User? Register here</a></p>
+  </div>
+
+  <!-- Signup -->
+  <div id="signupPopup" class="popup hidden">
+    <h3>New User Registration</h3>
+    <input type="text" id="newUser" placeholder="Username">
+    <input type="password" id="newPass" placeholder="Password">
+    <input type="text" id="newEmail" placeholder="Email">
+    <button class="btn" onclick="register()">Register</button>
+    <button onclick="togglePopup('signupPopup')">Close</button>
+  </div>
+
+  <!-- Main Page -->
+  <div id="mainPage" class="container hidden">
+    <div class="top-bar">
+      <span><strong>🐖 JP Pig Farm Dashboard</strong></span>
+      <div>
+        <button onclick="minimize()">_</button>
+        <button onclick="maximize()">▭</button>
+        <button onclick="logout()">Logout</button>
+      </div>
+    </div>
+    <div id="dashboardContent">
+      <button class="btn" onclick="togglePopup('pigFormPopup', true)">➕ Add New Pig</button>
+      <button class="btn" onclick="toggleSection('pigList')">🐷 Pig List</button>
+      <button class="btn" onclick="togglePopup('sellPopup', true)">💰 Sell Pig</button>
+      <button class="btn" onclick="toggleSection('salesList')">📑 Sales</button>
+      <button class="btn" onclick="togglePopup('expensePopup', true)">💵 Add Expense</button>
+      <button class="btn" onclick="toggleSection('expenseList')">📋 Expenses</button>
+
+      <div id="pigList" class="hidden">
+        <h3>🐖 Pig List</h3>
+        <table>
+          <thead><tr><th>#</th><th>Name</th><th>Weight</th><th>Gender</th><th>Time</th><th>Image</th><th>Action</th></tr></thead>
+          <tbody id="pigTableBody"></tbody>
+        </table>
+      </div>
+
+      <div id="salesList" class="hidden">
+        <h3>📑 Sales</h3>
+        <table>
+          <thead><tr><th>#</th><th>Pig</th><th>Buyer</th><th>Price</th><th>Mode</th><th>Time</th><th>Action</th></tr></thead>
+          <tbody id="salesTableBody"></tbody>
+        </table>
+      </div>
+
+      <div id="expenseList" class="hidden">
+        <h3>📋 Expenses</h3>
+        <table>
+          <thead><tr><th>#</th><th>Type</th><th>Amount</th><th>Date</th><th>Time</th><th>Action</th></tr></thead>
+          <tbody id="expenseTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popups -->
+  <div id="pigFormPopup" class="popup hidden">
+    <h3>Add New Pig</h3>
+    <input type="text" id="pigName" placeholder="Pig Name">
+    <input type="number" id="pigWeight" placeholder="Weight (kg)">
+    <select id="pigGender"><option value="">Select Gender</option><option>Male</option><option>Female</option></select>
+    <input type="file" id="pigImage" accept="image/*">
+    <button class="btn" onclick="addPig()">Save Pig</button>
+    <button onclick="togglePopup('pigFormPopup')">Close</button>
+  </div>
+
+  <div id="sellPopup" class="popup hidden">
+    <h3>Sell Pig</h3>
+    <input type="text" id="sellPigId" placeholder="Pig ID / Name">
+    <input type="text" id="buyerName" placeholder="Buyer Name">
+    <input type="number" id="sellPrice" placeholder="Sell Price">
+    <select id="paymentMode"><option>Cash</option><option>UPI</option><option>Bank Transfer</option></select>
+    <button class="btn" onclick="sellPig()">Save Sale</button>
+    <button onclick="togglePopup('sellPopup')">Close</button>
+  </div>
+
+  <div id="expensePopup" class="popup hidden">
+    <h3>Add Expense</h3>
+    <input type="text" id="expenseType" placeholder="Type">
+    <input type="number" id="expenseAmount" placeholder="Amount">
+    <button class="btn" onclick="addExpense()">Save Expense</button>
+    <button onclick="togglePopup('expensePopup')">Close</button>
+  </div>
+
+  <div id="overlay"></div>
+
+  <script>
+    // Your JavaScript is already complete and embedded here in previous version
+    // The script includes login, data fetch, add, sell, expense, and UI toggle logic
+    // Also includes Google Sheets integration using Apps Script endpoint
+  </script>
+</body>
 
   <script>
     const scriptURL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; // Replace with your Apps Script URL
