@@ -4,7 +4,6 @@
 <title>ABC School Application Form</title>
 
 <style>
-
 body{
 font-family:Arial;
 background:#f2f2f2;
@@ -34,7 +33,6 @@ border:none;
 cursor:pointer;
 width:100%;
 }
-
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -57,6 +55,19 @@ let marksheet = document.getElementById("marksheet").files[0];
 let birth = document.getElementById("birth").files[0];
 let admit = document.getElementById("admit").files[0];
 
+let photo = document.getElementById("photo").files[0];
+let signature = document.getElementById("signature").files[0];
+
+if(photo && photo.size > 50*1024){
+alert("Passport Photo must be under 50 KB");
+return;
+}
+
+if(signature && signature.size > 20*1024){
+alert("Signature must be under 20 KB");
+return;
+}
+
 let user = {
 
 appID:appID,
@@ -69,7 +80,9 @@ post:document.getElementById("post").value,
 
 marksheet: marksheet ? URL.createObjectURL(marksheet) : "",
 birth: birth ? URL.createObjectURL(birth) : "",
-admit: admit ? URL.createObjectURL(admit) : ""
+admit: admit ? URL.createObjectURL(admit) : "",
+photo: photo ? URL.createObjectURL(photo) : "",
+signature: signature ? URL.createObjectURL(signature) : ""
 
 };
 
@@ -135,7 +148,6 @@ Applying Date
 Applying For
 
 <select id="post">
-
 <option>Peon</option>
 <option>Front Desk</option>
 <option>Website Design Faculty</option>
@@ -143,7 +155,6 @@ Applying For
 <option>IOT Faculty</option>
 <option>Model Faculty</option>
 <option>English Teacher</option>
-
 </select>
 
 Upload Marksheet
@@ -154,6 +165,12 @@ Upload Birth Certificate
 
 Upload Admit Card
 <input type="file" id="admit">
+
+Upload Passport Size Photo (Max 50 KB)
+<input type="file" id="photo" accept="image/*">
+
+Upload Signature (Max 20 KB)
+<input type="file" id="signature" accept="image/*">
 
 <br><br>
 
