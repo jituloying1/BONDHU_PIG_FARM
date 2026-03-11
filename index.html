@@ -4,50 +4,12 @@
 <title>ABC School Application Form</title>
 
 <style>
-
-body{
-font-family:Arial;
-background:#f2f2f2;
-padding:40px;
-}
-
-.container{
-width:650px;
-margin:auto;
-background:white;
-padding:25px;
-border-radius:8px;
-box-shadow:0 0 10px rgba(0,0,0,0.2);
-}
-
-input,select{
-width:100%;
-padding:8px;
-margin:8px 0;
-}
-
-button{
-padding:10px;
-background:#007BFF;
-color:white;
-border:none;
-cursor:pointer;
-width:100%;
-}
-
-.error{
-color:#b30000;
-background:#ffd6d6;
-padding:8px;
-border-radius:4px;
-margin-top:5px;
-display:none;
-font-size:14px;
-}
-
+body{font-family:Arial;background:#f2f2f2;padding:40px;}
+.container{width:650px;margin:auto;background:white;padding:25px;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,0.2);}
+input,select{width:100%;padding:8px;margin:8px 0;}
+button{padding:10px;background:#007BFF;color:white;border:none;cursor:pointer;width:100%;}
+.error{color:#b30000;background:#ffd6d6;padding:8px;border-radius:4px;margin-top:5px;display:none;}
 </style>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 
@@ -55,103 +17,53 @@ function generateID(){
 return "ABC"+Date.now();
 }
 
-function checkPhoto(){
-
-let photoInput = document.getElementById("photo");
-let photo = photoInput.files[0];
-let error=document.getElementById("photoError");
-
-if(photo){
-
-let sizeKB=photo.size/1024;
-
-if(sizeKB>50){
-
-error.style.display="block";
-error.innerHTML="❌ Photo size is "+sizeKB.toFixed(2)+" KB. Only images under 50 KB are allowed.";
-
-photoInput.value="";   // REMOVE FILE
-
-return false;
-
-}else{
-
-error.style.display="none";
-return true;
-
-}
-
-}
-
-return true;
-
-}
-
-function checkSignature(){
-
-let signInput = document.getElementById("signature");
-let signature=signInput.files[0];
-let error=document.getElementById("signError");
-
-if(signature){
-
-let sizeKB=signature.size/1024;
-
-if(sizeKB>20){
-
-error.style.display="block";
-error.innerHTML="❌ Signature size is "+sizeKB.toFixed(2)+" KB. Only images under 20 KB allowed.";
-
-signInput.value="";   // REMOVE FILE
-
-return false;
-
-}else{
-
-error.style.display="none";
-return true;
-
-}
-
-}
-
-return true;
-
+function fileToBase64(file){
+return new Promise((resolve)=>{
+let reader=new FileReader();
+reader.onload=()=>resolve(reader.result);
+reader.readAsDataURL(file);
+});
 }
 
 async function submitForm(){
 
 event.preventDefault();
 
-if(checkPhoto()==false || checkSignature()==false){
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+let appID=generateID();
+
+let photo=document.getElementById("photo").files[0];
+let signature=document.getElementById("signature").files[0];
+let marksheet=document.getElementById("marksheet").files[0];
+let birth=document.getElementById("birth").files[0];
+let admit=document.getElementById("admit").files[0];
+
+if(photo && photo.size>50*1024){
+alert("Photo must be under 50KB");
 return;
 }
 
-let users = JSON.parse(localStorage.getItem("users")) || [];
+if(signature && signature.size>20*1024){
+alert("Signature must be under 20KB");
+return;
+}
 
-let appID = generateID();
-
-let marksheet = document.getElementById("marksheet").files[0];
-let birth = document.getElementById("birth").files[0];
-let admit = document.getElementById("admit").files[0];
-let photo = document.getElementById("photo").files[0];
-let signature = document.getElementById("signature").files[0];
-
-let user = {
+let user={
 
 appID:appID,
-name:document.getElementById("name").value,
-father:document.getElementById("father").value,
-mother:document.getElementById("mother").value,
-dob:document.getElementById("dob").value,
-applydate:document.getElementById("applydate").value,
-post:document.getElementById("post").value,
+name:name.value,
+father:father.value,
+mother:mother.value,
+dob:dob.value,
+applydate:applydate.value,
+post:post.value,
 
-marksheet: marksheet ? URL.createObjectURL(marksheet) : "",
-birth: birth ? URL.createObjectURL(birth) : "",
-admit: admit ? URL.createObjectURL(admit) : "",
-photo: photo ? URL.createObjectURL(photo) : "",
-signature: signature ? URL.createObjectURL(signature) : ""
+photo:photo ? await fileToBase64(photo):"",
+signature:signature ? await fileToBase64(signature):"",
+marksheet:marksheet ? await fileToBase64(marksheet):"",
+birth:birth ? await fileToBase64(birth):"",
+admit:admit ? await fileToBase64(admit):""
 
 };
 
@@ -159,31 +71,9 @@ users.push(user);
 
 localStorage.setItem("users",JSON.stringify(users));
 
-generatePDF(user);
-
-document.getElementById("form").reset();
-
-}
-
-function generatePDF(user){
-
-const { jsPDF } = window.jspdf;
-
-let doc = new jsPDF();
-
-doc.text("ABC SCHOOL",20,20);
-doc.text("Application Receipt",20,30);
-
-doc.text("Application ID: "+user.appID,20,50);
-doc.text("Name: "+user.name,20,60);
-doc.text("Father Name: "+user.father,20,70);
-doc.text("Mother Name: "+user.mother,20,80);
-doc.text("Post Applied: "+user.post,20,90);
-doc.text("Apply Date: "+user.applydate,20,100);
-
-doc.save("Receipt_"+user.appID+".pdf");
-
 alert("Application Submitted Successfully");
+
+form.reset();
 
 }
 
@@ -215,7 +105,6 @@ Applying Date
 <input type="date" id="applydate">
 
 Applying For
-
 <select id="post">
 <option>Peon</option>
 <option>Front Desk</option>
@@ -235,13 +124,11 @@ Upload Birth Certificate
 Upload Admit Card
 <input type="file" id="admit">
 
-Upload Passport Size Photo (Max 50 KB)
-<input type="file" id="photo" accept="image/*" onchange="checkPhoto()">
-<div id="photoError" class="error"></div>
+Passport Photo (Max 50KB)
+<input type="file" id="photo">
 
-Upload Signature (Max 20 KB)
-<input type="file" id="signature" accept="image/*" onchange="checkSignature()">
-<div id="signError" class="error"></div>
+Signature (Max 20KB)
+<input type="file" id="signature">
 
 <br><br>
 
@@ -259,4 +146,3 @@ Upload Signature (Max 20 KB)
 
 </body>
 </html>
-
