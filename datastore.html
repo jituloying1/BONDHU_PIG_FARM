@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Data Store</title>
+<title>ABC School Data Store</title>
 
 <style>
 
 body{
-font-family: Arial;
-background:#f4f4f4;
+font-family:Arial;
+background:#f2f2f2;
 padding:40px;
 }
 
@@ -51,14 +51,13 @@ users.forEach(function(user){
 
 table+=`
 <tr>
+<td>${user.appID}</td>
 <td>${user.name}</td>
 <td>${user.father}</td>
-<td>${user.mobile}</td>
-<td>${user.email}</td>
-<td>${user.qualification}</td>
-<td>${user.district}</td>
-<td>${user.state}</td>
-<td>${user.pincode}</td>
+<td>${user.mother}</td>
+<td>${user.dob}</td>
+<td>${user.post}</td>
+<td>${user.applydate}</td>
 </tr>
 `;
 
@@ -72,11 +71,11 @@ function downloadExcel(){
 
 let users = JSON.parse(localStorage.getItem("users")) || [];
 
-let csv="Name,Father,Mobile,Email,Qualification,District,State,Pincode\n";
+let csv="ApplicationID,Name,Father,Mother,DOB,Post,ApplyDate\n";
 
 users.forEach(function(u){
 
-csv+=`${u.name},${u.father},${u.mobile},${u.email},${u.qualification},${u.district},${u.state},${u.pincode}\n`;
+csv+=`${u.appID},${u.name},${u.father},${u.mother},${u.dob},${u.post},${u.applydate}\n`;
 
 });
 
@@ -86,7 +85,7 @@ let a=document.createElement("a");
 
 a.href=URL.createObjectURL(blob);
 
-a.download="userdata.csv";
+a.download="ABC_School_Applicants.csv";
 
 a.click();
 
@@ -98,21 +97,20 @@ a.click();
 
 <body onload="loadData()">
 
-<h2>User Data Store</h2>
+<h2>ABC School Applicant Data Store</h2>
 
 <button onclick="downloadExcel()">Download Excel</button>
 
 <table>
 
 <tr>
+<th>Application ID</th>
 <th>Name</th>
 <th>Father</th>
-<th>Mobile</th>
-<th>Email</th>
-<th>Qualification</th>
-<th>District</th>
-<th>State</th>
-<th>Pincode</th>
+<th>Mother</th>
+<th>DOB</th>
+<th>Post Applied</th>
+<th>Apply Date</th>
 </tr>
 
 <tbody id="tabledata"></tbody>
