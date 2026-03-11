@@ -2,33 +2,25 @@
 <html>
 <head>
 <title>User Form</title>
-<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="container">
-
 <h2>User Registration Form</h2>
 
-<form action="submit.php" method="POST">
+<form action="submit.php" method="POST" enctype="multipart/form-data">
 
-<label>Name</label>
-<input type="text" name="name" required>
+Name: <input type="text" name="name" required><br><br>
 
-<label>Father Name</label>
-<input type="text" name="father_name" required>
+Father Name: <input type="text" name="father_name" required><br><br>
 
-<label>Mobile Number</label>
-<input type="text" name="mobile" required>
+Mobile Number: <input type="text" name="mobile" required><br><br>
 
-<label>Email</label>
-<input type="email" name="email">
+Email: <input type="email" name="email"><br><br>
 
-<label>Address</label>
-<textarea name="address"></textarea>
+Address: <textarea name="address"></textarea><br><br>
 
-<label>Qualification</label>
+Qualification:
 <select name="qualification">
 <option>Class X</option>
 <option>Class XI</option>
@@ -41,29 +33,35 @@
 <option>MPhil</option>
 <option>Other</option>
 </select>
-
-<label>District</label>
-<input type="text" name="district">
-
-<label>State</label>
-<input type="text" name="state">
-
-<label>Pincode</label>
-<input type="text" name="pincode">
-
 <br><br>
+
+District: <input type="text" name="district"><br><br>
+
+State: <input type="text" name="state"><br><br>
+
+Pincode: <input type="text" name="pincode"><br><br>
+
+Upload Photo: <input type="file" name="photo"><br><br>
+
+Upload Signature: <input type="file" name="signature"><br><br>
+
+Upload Marksheet: <input type="file" name="marksheet"><br><br>
+
+Upload Caste Certificate: <input type="file" name="caste_certificate"><br><br>
 
 <button type="submit">Submit</button>
 
 </form>
 
-<br>
+<br><br>
 
 <a href="admin.php">
 <button>Admin Button</button>
 </a>
 
-</div>
+<a href="datastore.php">
+<button>Data Store</button>
+</a>
 
 </body>
 </html>
