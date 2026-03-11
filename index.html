@@ -60,15 +60,26 @@ function checkPhoto(){
 let photo=document.getElementById("photo").files[0];
 let error=document.getElementById("photoError");
 
-if(photo && photo.size>50*1024){
+if(photo){
+
+let sizeKB=photo.size/1024;
+
+if(sizeKB>50){
 
 error.style.display="block";
-error.innerText="❌ Passport photo must be under 50 KB";
+error.innerHTML="❌ Photo size is "+sizeKB.toFixed(2)+" KB. It must be under 50 KB";
 
 return false;
-}
+
+}else{
 
 error.style.display="none";
+return true;
+
+}
+
+}
+
 return true;
 
 }
@@ -78,15 +89,26 @@ function checkSignature(){
 let signature=document.getElementById("signature").files[0];
 let error=document.getElementById("signError");
 
-if(signature && signature.size>20*1024){
+if(signature){
+
+let sizeKB=signature.size/1024;
+
+if(sizeKB>20){
 
 error.style.display="block";
-error.innerText="❌ Signature must be under 20 KB";
+error.innerHTML="❌ Signature size is "+sizeKB.toFixed(2)+" KB. It must be under 20 KB";
 
 return false;
-}
+
+}else{
 
 error.style.display="none";
+return true;
+
+}
+
+}
+
 return true;
 
 }
@@ -95,7 +117,7 @@ async function submitForm(){
 
 event.preventDefault();
 
-if(!checkPhoto() || !checkSignature()){
+if(checkPhoto()==false || checkSignature()==false){
 return;
 }
 
@@ -106,7 +128,6 @@ let appID = generateID();
 let marksheet = document.getElementById("marksheet").files[0];
 let birth = document.getElementById("birth").files[0];
 let admit = document.getElementById("admit").files[0];
-
 let photo = document.getElementById("photo").files[0];
 let signature = document.getElementById("signature").files[0];
 
