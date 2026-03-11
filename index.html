@@ -2,7 +2,6 @@
 <html>
 <head>
 <title>ABC School Application Form</title>
-
 <style>
 body{font-family:Arial;background:#f2f2f2;padding:40px;}
 .container{width:650px;margin:auto;background:white;padding:25px;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,0.2);}
@@ -12,98 +11,77 @@ button{padding:10px;background:#007BFF;color:white;border:none;cursor:pointer;wi
 </style>
 
 <script>
-
 function generateID(){
-return "ABC"+Date.now();
+  return "ABC"+Date.now();
 }
 
 function fileToBase64(file){
-return new Promise((resolve)=>{
-let reader=new FileReader();
-reader.onload=()=>resolve(reader.result);
-reader.readAsDataURL(file);
-});
+  return new Promise(resolve=>{
+    let reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.readAsDataURL(file);
+  });
 }
 
-async function submitForm(){
+async function submitForm(event){
+  event.preventDefault();
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+  let appID = generateID();
 
-event.preventDefault();
+  let photo = document.getElementById("photo").files[0];
+  let signature = document.getElementById("signature").files[0];
+  let marksheet = document.getElementById("marksheet").files[0];
+  let birth = document.getElementById("birth").files[0];
+  let admit = document.getElementById("admit").files[0];
 
-let users = JSON.parse(localStorage.getItem("users")) || [];
+  if(photo && photo.size>50*1024){
+    alert("Photo must be under 50KB");
+    return;
+  }
 
-let appID=generateID();
+  if(signature && signature.size>20*1024){
+    alert("Signature must be under 20KB");
+    return;
+  }
 
-let photo=document.getElementById("photo").files[0];
-let signature=document.getElementById("signature").files[0];
-let marksheet=document.getElementById("marksheet").files[0];
-let birth=document.getElementById("birth").files[0];
-let admit=document.getElementById("admit").files[0];
+  let user = {
+    appID: appID,
+    name: document.getElementById("name").value,
+    father: document.getElementById("father").value,
+    mother: document.getElementById("mother").value,
+    dob: document.getElementById("dob").value,
+    applydate: document.getElementById("applydate").value,
+    post: document.getElementById("post").value,
+    photo: photo ? await fileToBase64(photo) : "",
+    signature: signature ? await fileToBase64(signature) : "",
+    marksheet: marksheet ? await fileToBase64(marksheet) : "",
+    birth: birth ? await fileToBase64(birth) : "",
+    admit: admit ? await fileToBase64(admit) : ""
+  };
 
-if(photo && photo.size>50*1024){
-alert("Photo must be under 50KB");
-return;
+  users.push(user);
+  localStorage.setItem("users", JSON.stringify(users));
+  alert("Application Submitted Successfully!");
+  document.getElementById("form").reset();
 }
-
-if(signature && signature.size>20*1024){
-alert("Signature must be under 20KB");
-return;
-}
-
-let user={
-
-appID:appID,
-name:name.value,
-father:father.value,
-mother:mother.value,
-dob:dob.value,
-applydate:applydate.value,
-post:post.value,
-
-photo:photo ? await fileToBase64(photo):"",
-signature:signature ? await fileToBase64(signature):"",
-marksheet:marksheet ? await fileToBase64(marksheet):"",
-birth:birth ? await fileToBase64(birth):"",
-admit:admit ? await fileToBase64(admit):""
-
-};
-
-users.push(user);
-
-localStorage.setItem("users",JSON.stringify(users));
-
-alert("Application Submitted Successfully");
-
-form.reset();
-
-}
-
 </script>
 
 </head>
-
 <body>
 
 <div class="container">
-
 <h2>ABC School Job Application</h2>
-
-<form id="form" onsubmit="submitForm()">
-
+<form id="form" onsubmit="submitForm(event)">
 Name
 <input type="text" id="name" required>
-
 Father Name
 <input type="text" id="father">
-
 Mother Name
 <input type="text" id="mother">
-
 Date of Birth
 <input type="date" id="dob">
-
 Applying Date
 <input type="date" id="applydate">
-
 Applying For
 <select id="post">
 <option>Peon</option>
@@ -117,31 +95,21 @@ Applying For
 
 Upload Marksheet
 <input type="file" id="marksheet">
-
 Upload Birth Certificate
 <input type="file" id="birth">
-
 Upload Admit Card
 <input type="file" id="admit">
-
 Passport Photo (Max 50KB)
 <input type="file" id="photo">
-
 Signature (Max 20KB)
 <input type="file" id="signature">
 
 <br><br>
-
 <button type="submit">Submit Application</button>
-
 </form>
 
 <br>
-
-<a href="datastore.html">
-<button>Data Store</button>
-</a>
-
+<a href="datastore.html"><button>Data Store</button></a>
 </div>
 
 </body>
