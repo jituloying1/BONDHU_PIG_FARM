@@ -4,6 +4,7 @@
 <title>ABC School Application Form</title>
 
 <style>
+
 body{
 font-family:Arial;
 background:#f2f2f2;
@@ -35,9 +36,15 @@ width:100%;
 }
 
 .error{
-color:red;
+color:#b30000;
+background:#ffd6d6;
+padding:8px;
+border-radius:4px;
+margin-top:5px;
+display:none;
 font-size:14px;
 }
+
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -51,13 +58,17 @@ return "ABC"+Date.now();
 function checkPhoto(){
 
 let photo=document.getElementById("photo").files[0];
+let error=document.getElementById("photoError");
 
 if(photo && photo.size>50*1024){
-document.getElementById("photoError").innerText="Photo must be under 50 KB";
+
+error.style.display="block";
+error.innerText="❌ Passport photo must be under 50 KB";
+
 return false;
 }
 
-document.getElementById("photoError").innerText="";
+error.style.display="none";
 return true;
 
 }
@@ -65,13 +76,17 @@ return true;
 function checkSignature(){
 
 let signature=document.getElementById("signature").files[0];
+let error=document.getElementById("signError");
 
 if(signature && signature.size>20*1024){
-document.getElementById("signError").innerText="Signature must be under 20 KB";
+
+error.style.display="block";
+error.innerText="❌ Signature must be under 20 KB";
+
 return false;
 }
 
-document.getElementById("signError").innerText="";
+error.style.display="none";
 return true;
 
 }
