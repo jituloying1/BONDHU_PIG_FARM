@@ -11,24 +11,24 @@
 
 <h2>User Registration Form</h2>
 
-<form action="submit.php" method="POST" enctype="multipart/form-data">
+<form action="submit.php" method="POST">
 
-Name
+<label>Name</label>
 <input type="text" name="name" required>
 
-Father Name
+<label>Father Name</label>
 <input type="text" name="father_name" required>
 
-Mobile Number
+<label>Mobile Number</label>
 <input type="text" name="mobile" required>
 
-Email
+<label>Email</label>
 <input type="email" name="email">
 
-Address
+<label>Address</label>
 <textarea name="address"></textarea>
 
-Qualification
+<label>Qualification</label>
 <select name="qualification">
 <option>Class X</option>
 <option>Class XI</option>
@@ -42,26 +42,16 @@ Qualification
 <option>Other</option>
 </select>
 
-District
+<label>District</label>
 <input type="text" name="district">
 
-State
+<label>State</label>
 <input type="text" name="state">
 
-Pincode
+<label>Pincode</label>
 <input type="text" name="pincode">
 
-Upload Photo
-<input type="file" name="photo">
-
-Upload Signature
-<input type="file" name="signature">
-
-Upload Marksheet
-<input type="file" name="marksheet">
-
-Upload Caste Certificate
-<input type="file" name="caste_certificate">
+<br><br>
 
 <button type="submit">Submit</button>
 
@@ -70,7 +60,7 @@ Upload Caste Certificate
 <br>
 
 <a href="admin.php">
-<button class="admin-btn">Admin Panel</button>
+<button>Admin Button</button>
 </a>
 
 </div>
