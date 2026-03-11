@@ -12,21 +12,9 @@ $district = $_POST['district'];
 $state = $_POST['state'];
 $pincode = $_POST['pincode'];
 
-$photo = $_FILES['photo']['name'];
-$signature = $_FILES['signature']['name'];
-$marksheet = $_FILES['marksheet']['name'];
-$caste = $_FILES['caste_certificate']['name'];
+$sql="INSERT INTO users(name,father_name,mobile,email,address,qualification,district,state,pincode)
 
-$upload_folder = "uploads/";
-
-move_uploaded_file($_FILES['photo']['tmp_name'], $upload_folder.$photo);
-move_uploaded_file($_FILES['signature']['tmp_name'], $upload_folder.$signature);
-move_uploaded_file($_FILES['marksheet']['tmp_name'], $upload_folder.$marksheet);
-move_uploaded_file($_FILES['caste_certificate']['tmp_name'], $upload_folder.$caste);
-
-$sql="INSERT INTO users(name,father_name,mobile,email,address,qualification,district,state,pincode,photo,signature,marksheet,caste_certificate)
-
-VALUES('$name','$father','$mobile','$email','$address','$qualification','$district','$state','$pincode','$photo','$signature','$marksheet','$caste')";
+VALUES('$name','$father','$mobile','$email','$address','$qualification','$district','$state','$pincode')";
 
 $conn->query($sql);
 
