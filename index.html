@@ -1,27 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>User Form</title>
+<title>User Registration Form</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f4f4f4;
+padding:40px;
+}
+
+.container{
+width:500px;
+margin:auto;
+background:white;
+padding:20px;
+border-radius:8px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+input,select,textarea{
+width:100%;
+padding:8px;
+margin:8px 0;
+}
+
+button{
+padding:10px;
+background:#007BFF;
+color:white;
+border:none;
+cursor:pointer;
+width:100%;
+}
+
+button:hover{
+background:#0056b3;
+}
+
+</style>
+
+<script>
+
+function saveData(){
+
+event.preventDefault();
+
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+let user = {
+
+name:document.getElementById("name").value,
+father:document.getElementById("father").value,
+mobile:document.getElementById("mobile").value,
+email:document.getElementById("email").value,
+address:document.getElementById("address").value,
+qualification:document.getElementById("qualification").value,
+district:document.getElementById("district").value,
+state:document.getElementById("state").value,
+pincode:document.getElementById("pincode").value
+
+};
+
+users.push(user);
+
+localStorage.setItem("users",JSON.stringify(users));
+
+alert("Form Submitted Successfully");
+
+document.getElementById("form").reset();
+
+}
+
+</script>
+
 </head>
 
 <body>
 
+<div class="container">
+
 <h2>User Registration Form</h2>
 
-<form action="submit.php" method="POST" enctype="multipart/form-data">
+<form id="form" onsubmit="saveData()">
 
-Name: <input type="text" name="name" required><br><br>
+Name
+<input type="text" id="name" required>
 
-Father Name: <input type="text" name="father_name" required><br><br>
+Father Name
+<input type="text" id="father" required>
 
-Mobile Number: <input type="text" name="mobile" required><br><br>
+Mobile Number
+<input type="text" id="mobile" required>
 
-Email: <input type="email" name="email"><br><br>
+Email
+<input type="email" id="email">
 
-Address: <textarea name="address"></textarea><br><br>
+Address
+<textarea id="address"></textarea>
 
-Qualification:
-<select name="qualification">
+Qualification
+<select id="qualification">
 <option>Class X</option>
 <option>Class XI</option>
 <option>Class XII</option>
@@ -31,37 +111,30 @@ Qualification:
 <option>M.Tech</option>
 <option>BSc</option>
 <option>MPhil</option>
-<option>Other</option>
 </select>
+
+District
+<input type="text" id="district">
+
+State
+<input type="text" id="state">
+
+Pincode
+<input type="text" id="pincode">
+
 <br><br>
-
-District: <input type="text" name="district"><br><br>
-
-State: <input type="text" name="state"><br><br>
-
-Pincode: <input type="text" name="pincode"><br><br>
-
-Upload Photo: <input type="file" name="photo"><br><br>
-
-Upload Signature: <input type="file" name="signature"><br><br>
-
-Upload Marksheet: <input type="file" name="marksheet"><br><br>
-
-Upload Caste Certificate: <input type="file" name="caste_certificate"><br><br>
 
 <button type="submit">Submit</button>
 
 </form>
 
-<br><br>
+<br>
 
-<a href="admin.php">
-<button>Admin Button</button>
-</a>
-
-<a href="datastore.php">
+<a href="datastore.html">
 <button>Data Store</button>
 </a>
+
+</div>
 
 </body>
 </html>
