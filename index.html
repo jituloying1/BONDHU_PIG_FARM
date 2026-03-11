@@ -2,25 +2,33 @@
 <html>
 <head>
 <title>User Form</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
+<div class="container">
 
 <h2>User Registration Form</h2>
 
 <form action="submit.php" method="POST" enctype="multipart/form-data">
 
-Name: <input type="text" name="name" required><br><br>
+Name
+<input type="text" name="name" required>
 
-Father Name: <input type="text" name="father_name" required><br><br>
+Father Name
+<input type="text" name="father_name" required>
 
-Mobile Number: <input type="text" name="mobile" required><br><br>
+Mobile Number
+<input type="text" name="mobile" required>
 
-Email: <input type="email" name="email"><br><br>
+Email
+<input type="email" name="email">
 
-Address: <textarea name="address"></textarea><br><br>
+Address
+<textarea name="address"></textarea>
 
-Qualification:
+Qualification
 <select name="qualification">
 <option>Class X</option>
 <option>Class XI</option>
@@ -33,21 +41,27 @@ Qualification:
 <option>MPhil</option>
 <option>Other</option>
 </select>
-<br><br>
 
-District: <input type="text" name="district"><br><br>
+District
+<input type="text" name="district">
 
-State: <input type="text" name="state"><br><br>
+State
+<input type="text" name="state">
 
-Pincode: <input type="text" name="pincode"><br><br>
+Pincode
+<input type="text" name="pincode">
 
-Upload Photo: <input type="file" name="photo"><br><br>
+Upload Photo
+<input type="file" name="photo">
 
-Upload Signature: <input type="file" name="signature"><br><br>
+Upload Signature
+<input type="file" name="signature">
 
-Upload Marksheet: <input type="file" name="marksheet"><br><br>
+Upload Marksheet
+<input type="file" name="marksheet">
 
-Upload Caste Certificate: <input type="file" name="caste_certificate"><br><br>
+Upload Caste Certificate
+<input type="file" name="caste_certificate">
 
 <button type="submit">Submit</button>
 
@@ -56,8 +70,10 @@ Upload Caste Certificate: <input type="file" name="caste_certificate"><br><br>
 <br>
 
 <a href="admin.php">
-<button>Admin Button</button>
+<button class="admin-btn">Admin Panel</button>
 </a>
+
+</div>
 
 </body>
 </html>
