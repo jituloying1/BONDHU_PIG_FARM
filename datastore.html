@@ -30,8 +30,9 @@ height:50px;
 }
 
 button{
-padding:8px;
+padding:6px 10px;
 margin:3px;
+cursor:pointer;
 }
 
 </style>
@@ -42,7 +43,7 @@ let users=[];
 
 function loadData(){
 
-users=JSON.parse(localStorage.getItem("users"))||[];
+users = JSON.parse(localStorage.getItem("users")) || [];
 
 let table="";
 
@@ -66,6 +67,10 @@ table+=`
 <td><a href="${u.birth}" target="_blank">View</a></td>
 <td><a href="${u.admit}" target="_blank">View</a></td>
 
+<td>
+<button onclick="editUser(${index})">Edit</button>
+</td>
+
 </tr>
 
 `;
@@ -76,17 +81,26 @@ document.getElementById("data").innerHTML=table;
 
 }
 
+function editUser(index){
+
+localStorage.setItem("editIndex",index);
+
+window.location.href="edit.html";
+
+}
+
 function downloadExcel(){
 
-let csv="AppID,Name,Father,Mother,Post,Date,Photo,Signature,Marksheet,Birth,Admit\n";
+let csv="AppID,Name,Father,Mother,Post,Date\n";
 
 users.forEach(u=>{
 
-csv+=`${u.appID},${u.name},${u.father},${u.mother},${u.post},${u.applydate},${u.photo},${u.signature},${u.marksheet},${u.birth},${u.admit}\n`;
+csv+=`${u.appID},${u.name},${u.father},${u.mother},${u.post},${u.applydate}\n`;
 
 });
 
 let blob=new Blob([csv],{type:"text/csv"});
+
 let a=document.createElement("a");
 
 a.href=URL.createObjectURL(blob);
@@ -120,6 +134,7 @@ a.click();
 <th>Marksheet</th>
 <th>Birth</th>
 <th>Admit</th>
+<th>Edit</th>
 
 </tr>
 
