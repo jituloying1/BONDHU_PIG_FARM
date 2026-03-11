@@ -12,11 +12,17 @@ button{padding:6px 10px;margin:3px;cursor:pointer;border:none;border-radius:4px;
 button.edit{background:#007BFF;color:white;}
 button.delete{background:#b30000;color:white;}
 button.download{background:#28a745;color:white;}
+input#search{padding:8px;width:250px;margin-bottom:15px;border-radius:4px;border:1px solid #ccc;}
+.highlight{background:yellow;}
 </style>
 </head>
 <body onload="loadData()">
 
 <h2>ABC School Applicant Data Store</h2>
+
+<!-- Search Box -->
+<input type="text" id="search" placeholder="Search by AppID, Name, or DOB" onkeyup="searchData()">
+
 <button class="download" onclick="downloadExcel()">Download Excel</button>
 <button class="delete" onclick="deleteAll()">Delete All Data</button>
 <br><br>
@@ -44,8 +50,12 @@ let users = [];
 
 function loadData(){
   users = JSON.parse(localStorage.getItem("users")) || [];
+  displayData(users);
+}
+
+function displayData(dataArray){
   let table = "";
-  users.forEach((u,index)=>{
+  dataArray.forEach((u,index)=>{
     table+=`
 <tr>
 <td>${u.appID}</td>
@@ -71,7 +81,7 @@ function loadData(){
 
 function editUser(index){
   localStorage.setItem("editIndex", index);
-  window.location.href = "edit.html"; // redirect to your edit page
+  window.location.href = "edit.html"; // redirect to edit page
 }
 
 function deleteUser(index){
@@ -103,6 +113,17 @@ function downloadExcel(){
   a.href = URL.createObjectURL(blob);
   a.download = "ABC_School_Data.csv";
   a.click();
+}
+
+// Search Function
+function searchData(){
+  let input = document.getElementById("search").value.toLowerCase();
+  let filtered = users.filter(u => 
+    u.appID.toLowerCase().includes(input) ||
+    u.name.toLowerCase().includes(input) ||
+    u.dob.toLowerCase().includes(input)
+  );
+  displayData(filtered);
 }
 </script>
 
