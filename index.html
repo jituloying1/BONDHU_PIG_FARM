@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>User Registration Form</title>
+<title>ABC School Application Form</title>
 
 <style>
 
 body{
-font-family: Arial;
-background:#f4f4f4;
+font-family:Arial;
+background:#f2f2f2;
 padding:40px;
 }
 
 .container{
-width:500px;
+width:600px;
 margin:auto;
 background:white;
-padding:20px;
+padding:25px;
 border-radius:8px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
+box-shadow:0 0 10px rgba(0,0,0,0.2);
 }
 
-input,select,textarea{
+input,select{
 width:100%;
 padding:8px;
 margin:8px 0;
@@ -43,23 +43,27 @@ background:#0056b3;
 
 <script>
 
-function saveData(){
+function generateID(){
+return "APP"+Math.floor(Math.random()*100000);
+}
+
+function submitForm(){
 
 event.preventDefault();
 
 let users = JSON.parse(localStorage.getItem("users")) || [];
 
+let appID = generateID();
+
 let user = {
 
+appID:appID,
 name:document.getElementById("name").value,
 father:document.getElementById("father").value,
-mobile:document.getElementById("mobile").value,
-email:document.getElementById("email").value,
-address:document.getElementById("address").value,
-qualification:document.getElementById("qualification").value,
-district:document.getElementById("district").value,
-state:document.getElementById("state").value,
-pincode:document.getElementById("pincode").value
+mother:document.getElementById("mother").value,
+dob:document.getElementById("dob").value,
+applydate:document.getElementById("applydate").value,
+post:document.getElementById("post").value
 
 };
 
@@ -67,9 +71,43 @@ users.push(user);
 
 localStorage.setItem("users",JSON.stringify(users));
 
-alert("Form Submitted Successfully");
+generateReceipt(user);
 
 document.getElementById("form").reset();
+
+}
+
+function generateReceipt(user){
+
+let receipt =
+`ABC SCHOOL
+
+Application Receipt
+
+Application ID: ${user.appID}
+
+Name: ${user.name}
+Father Name: ${user.father}
+Mother Name: ${user.mother}
+
+Post Applied: ${user.post}
+
+Application Date: ${user.applydate}
+
+Thank you for applying at ABC School
+`;
+
+let blob = new Blob([receipt],{type:"text/plain"});
+
+let a=document.createElement("a");
+
+a.href=URL.createObjectURL(blob);
+
+a.download=`Receipt_${user.appID}.txt`;
+
+a.click();
+
+alert("Application Submitted Successfully");
 
 }
 
@@ -81,50 +119,57 @@ document.getElementById("form").reset();
 
 <div class="container">
 
-<h2>User Registration Form</h2>
+<h2>ABC School Job Application</h2>
 
-<form id="form" onsubmit="saveData()">
+<form id="form" onsubmit="submitForm()">
 
 Name
 <input type="text" id="name" required>
 
 Father Name
-<input type="text" id="father" required>
+<input type="text" id="father">
 
-Mobile Number
-<input type="text" id="mobile" required>
+Mother Name
+<input type="text" id="mother">
 
-Email
-<input type="email" id="email">
+Date of Birth
+<input type="date" id="dob">
 
-Address
-<textarea id="address"></textarea>
+Applying Date
+<input type="date" id="applydate">
 
-Qualification
-<select id="qualification">
-<option>Class X</option>
-<option>Class XI</option>
-<option>Class XII</option>
-<option>BA</option>
-<option>MA</option>
-<option>B.Tech</option>
-<option>M.Tech</option>
-<option>BSc</option>
-<option>MPhil</option>
+Applying For
+
+<select id="post">
+
+<option>Peon</option>
+<option>Front Desk</option>
+<option>Website Design Faculty</option>
+<option>Python Faculty</option>
+<option>IOT Faculty</option>
+<option>Model Faculty</option>
+<option>English Teacher</option>
+
 </select>
 
-District
-<input type="text" id="district">
+Upload Marksheet
+<input type="file">
 
-State
-<input type="text" id="state">
+Upload Birth Certificate
+<input type="file">
 
-Pincode
-<input type="text" id="pincode">
+Upload Admit Card
+<input type="file">
+
+Upload Certificates
+<input type="file">
+
+Upload Other Supporting Documents
+<input type="file">
 
 <br><br>
 
-<button type="submit">Submit</button>
+<button type="submit">Submit Application</button>
 
 </form>
 
