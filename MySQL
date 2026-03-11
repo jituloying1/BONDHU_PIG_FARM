@@ -3,6 +3,7 @@ CREATE DATABASE userform;
 USE userform;
 
 CREATE TABLE users (
+
 id INT AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(100),
 father_name VARCHAR(100),
@@ -12,9 +13,6 @@ address TEXT,
 qualification VARCHAR(50),
 district VARCHAR(50),
 state VARCHAR(50),
-pincode VARCHAR(10),
-photo VARCHAR(200),
-signature VARCHAR(200),
-marksheet VARCHAR(200),
-caste_certificate VARCHAR(200)
+pincode VARCHAR(10)
+
 );
