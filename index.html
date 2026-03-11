@@ -57,7 +57,8 @@ return "ABC"+Date.now();
 
 function checkPhoto(){
 
-let photo=document.getElementById("photo").files[0];
+let photoInput = document.getElementById("photo");
+let photo = photoInput.files[0];
 let error=document.getElementById("photoError");
 
 if(photo){
@@ -67,7 +68,9 @@ let sizeKB=photo.size/1024;
 if(sizeKB>50){
 
 error.style.display="block";
-error.innerHTML="❌ Photo size is "+sizeKB.toFixed(2)+" KB. It must be under 50 KB";
+error.innerHTML="❌ Photo size is "+sizeKB.toFixed(2)+" KB. Only images under 50 KB are allowed.";
+
+photoInput.value="";   // REMOVE FILE
 
 return false;
 
@@ -86,7 +89,8 @@ return true;
 
 function checkSignature(){
 
-let signature=document.getElementById("signature").files[0];
+let signInput = document.getElementById("signature");
+let signature=signInput.files[0];
 let error=document.getElementById("signError");
 
 if(signature){
@@ -96,7 +100,9 @@ let sizeKB=signature.size/1024;
 if(sizeKB>20){
 
 error.style.display="block";
-error.innerHTML="❌ Signature size is "+sizeKB.toFixed(2)+" KB. It must be under 20 KB";
+error.innerHTML="❌ Signature size is "+sizeKB.toFixed(2)+" KB. Only images under 20 KB allowed.";
+
+signInput.value="";   // REMOVE FILE
 
 return false;
 
