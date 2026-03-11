@@ -13,12 +13,14 @@ button.edit{background:#007BFF;color:white;}
 button.delete{background:#b30000;color:white;}
 button.download{background:#28a745;color:white;}
 input#search{padding:8px;width:250px;margin-bottom:15px;border-radius:4px;border:1px solid #ccc;}
+.highlight{background:yellow;}
 </style>
 </head>
 <body onload="loadData()">
 
 <h2>ABC School Applicant Data Store</h2>
 
+<!-- Search Box -->
 <input type="text" id="search" placeholder="Search by AppID, Name, or DOB" onkeyup="searchData()">
 
 <button class="download" onclick="downloadExcel()">Download Excel</button>
@@ -31,9 +33,9 @@ input#search{padding:8px;width:250px;margin-bottom:15px;border-radius:4px;border
 <th>Name</th>
 <th>Father</th>
 <th>Mother</th>
-<th>DOB</th>
+<th>Date of Birth</th> <!-- Added header -->
 <th>Post</th>
-<th>Apply Date</th>
+<th>Date</th>
 <th>Photo</th>
 <th>Signature</th>
 <th>Marksheet</th>
@@ -61,7 +63,7 @@ function displayData(dataArray){
 <td>${u.name}</td>
 <td>${u.father}</td>
 <td>${u.mother}</td>
-<td>${u.dob}</td>
+<td>${u.dob}</td> <!-- Display DOB -->
 <td>${u.post}</td>
 <td>${u.applydate}</td>
 <td>${u.photo ? '<img src="'+u.photo+'">' : ''}</td>
@@ -81,7 +83,7 @@ function displayData(dataArray){
 
 function editUser(index){
   localStorage.setItem("editIndex", index);
-  window.location.href = "edit.html";
+  window.location.href = "edit.html"; // redirect to edit page
 }
 
 function deleteUser(index){
@@ -104,7 +106,7 @@ function downloadExcel(){
     alert("No data to download!");
     return;
   }
-  let csv = "AppID,Name,Father,Mother,DOB,Post,ApplyDate,Photo,Signature,Marksheet,Birth,Admit\n";
+  let csv = "AppID,Name,Father,Mother,DOB,Post,Date,Photo,Signature,Marksheet,Birth,Admit\n";
   users.forEach(u=>{
     csv += `"${u.appID}","${u.name}","${u.father}","${u.mother}","${u.dob}","${u.post}","${u.applydate}","${u.photo}","${u.signature}","${u.marksheet}","${u.birth}","${u.admit}"\n`;
   });
