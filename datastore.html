@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Data Store</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f4f4f4;
+padding:40px;
+}
+
+table{
+border-collapse:collapse;
+width:100%;
+background:white;
+}
+
+th,td{
+border:1px solid #ddd;
+padding:8px;
+text-align:center;
+}
+
+th{
+background:#007BFF;
+color:white;
+}
+
+button{
+padding:10px;
+background:green;
+color:white;
+border:none;
+cursor:pointer;
+margin-bottom:20px;
+}
+
+</style>
+
+<script>
+
+function loadData(){
+
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+let table="";
+
+users.forEach(function(user){
+
+table+=`
+<tr>
+<td>${user.name}</td>
+<td>${user.father}</td>
+<td>${user.mobile}</td>
+<td>${user.email}</td>
+<td>${user.qualification}</td>
+<td>${user.district}</td>
+<td>${user.state}</td>
+<td>${user.pincode}</td>
+</tr>
+`;
+
+});
+
+document.getElementById("tabledata").innerHTML=table;
+
+}
+
+function downloadExcel(){
+
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+let csv="Name,Father,Mobile,Email,Qualification,District,State,Pincode\n";
+
+users.forEach(function(u){
+
+csv+=`${u.name},${u.father},${u.mobile},${u.email},${u.qualification},${u.district},${u.state},${u.pincode}\n`;
+
+});
+
+let blob = new Blob([csv],{type:"text/csv"});
+
+let a=document.createElement("a");
+
+a.href=URL.createObjectURL(blob);
+
+a.download="userdata.csv";
+
+a.click();
+
+}
+
+</script>
+
+</head>
+
+<body onload="loadData()">
+
+<h2>User Data Store</h2>
+
+<button onclick="downloadExcel()">Download Excel</button>
+
+<table>
+
+<tr>
+<th>Name</th>
+<th>Father</th>
+<th>Mobile</th>
+<th>Email</th>
+<th>Qualification</th>
+<th>District</th>
+<th>State</th>
+<th>Pincode</th>
+</tr>
+
+<tbody id="tabledata"></tbody>
+
+</table>
+
+</body>
+</html>
