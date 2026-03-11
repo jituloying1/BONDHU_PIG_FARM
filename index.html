@@ -33,6 +33,11 @@ border:none;
 cursor:pointer;
 width:100%;
 }
+
+.error{
+color:red;
+font-size:14px;
+}
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -43,9 +48,41 @@ function generateID(){
 return "ABC"+Date.now();
 }
 
+function checkPhoto(){
+
+let photo=document.getElementById("photo").files[0];
+
+if(photo && photo.size>50*1024){
+document.getElementById("photoError").innerText="Photo must be under 50 KB";
+return false;
+}
+
+document.getElementById("photoError").innerText="";
+return true;
+
+}
+
+function checkSignature(){
+
+let signature=document.getElementById("signature").files[0];
+
+if(signature && signature.size>20*1024){
+document.getElementById("signError").innerText="Signature must be under 20 KB";
+return false;
+}
+
+document.getElementById("signError").innerText="";
+return true;
+
+}
+
 async function submitForm(){
 
 event.preventDefault();
+
+if(!checkPhoto() || !checkSignature()){
+return;
+}
 
 let users = JSON.parse(localStorage.getItem("users")) || [];
 
@@ -57,16 +94,6 @@ let admit = document.getElementById("admit").files[0];
 
 let photo = document.getElementById("photo").files[0];
 let signature = document.getElementById("signature").files[0];
-
-if(photo && photo.size > 50*1024){
-alert("Passport Photo must be under 50 KB");
-return;
-}
-
-if(signature && signature.size > 20*1024){
-alert("Signature must be under 20 KB");
-return;
-}
 
 let user = {
 
@@ -167,10 +194,12 @@ Upload Admit Card
 <input type="file" id="admit">
 
 Upload Passport Size Photo (Max 50 KB)
-<input type="file" id="photo" accept="image/*">
+<input type="file" id="photo" accept="image/*" onchange="checkPhoto()">
+<div id="photoError" class="error"></div>
 
 Upload Signature (Max 20 KB)
-<input type="file" id="signature" accept="image/*">
+<input type="file" id="signature" accept="image/*" onchange="checkSignature()">
+<div id="signError" class="error"></div>
 
 <br><br>
 
