@@ -17,10 +17,12 @@ $signature = $_FILES['signature']['name'];
 $marksheet = $_FILES['marksheet']['name'];
 $caste = $_FILES['caste_certificate']['name'];
 
-move_uploaded_file($_FILES['photo']['tmp_name'],"uploads/".$photo);
-move_uploaded_file($_FILES['signature']['tmp_name'],"uploads/".$signature);
-move_uploaded_file($_FILES['marksheet']['tmp_name'],"uploads/".$marksheet);
-move_uploaded_file($_FILES['caste_certificate']['tmp_name'],"uploads/".$caste);
+$upload_folder = "uploads/";
+
+move_uploaded_file($_FILES['photo']['tmp_name'], $upload_folder.$photo);
+move_uploaded_file($_FILES['signature']['tmp_name'], $upload_folder.$signature);
+move_uploaded_file($_FILES['marksheet']['tmp_name'], $upload_folder.$marksheet);
+move_uploaded_file($_FILES['caste_certificate']['tmp_name'], $upload_folder.$caste);
 
 $sql="INSERT INTO users(name,father_name,mobile,email,address,qualification,district,state,pincode,photo,signature,marksheet,caste_certificate)
 
