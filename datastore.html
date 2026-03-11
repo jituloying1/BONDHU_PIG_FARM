@@ -29,63 +29,84 @@ color:white;
 }
 
 button{
-padding:10px;
-background:green;
-color:white;
-border:none;
-cursor:pointer;
-margin-bottom:20px;
+padding:8px;
+margin:3px;
 }
 
 </style>
 
 <script>
 
+let users=[];
+
 function loadData(){
 
-let users = JSON.parse(localStorage.getItem("users")) || [];
+users = JSON.parse(localStorage.getItem("users")) || [];
 
 let table="";
 
-users.forEach(function(user){
+users.forEach((u,index)=>{
 
 table+=`
+
 <tr>
-<td>${user.appID}</td>
-<td>${user.name}</td>
-<td>${user.father}</td>
-<td>${user.mother}</td>
-<td>${user.dob}</td>
-<td>${user.post}</td>
-<td>${user.applydate}</td>
+
+<td>${u.appID}</td>
+<td contenteditable="true">${u.name}</td>
+<td contenteditable="true">${u.father}</td>
+<td contenteditable="true">${u.mother}</td>
+<td>${u.post}</td>
+<td>${u.applydate}</td>
+
+<td>
+<a href="${u.marksheet}" target="_blank">View</a>
+</td>
+
+<td>
+<button onclick="saveEdit(${index},this)">Save</button>
+</td>
+
 </tr>
+
 `;
 
 });
 
-document.getElementById("tabledata").innerHTML=table;
+document.getElementById("data").innerHTML=table;
+
+}
+
+function saveEdit(index,btn){
+
+let row = btn.parentNode.parentNode;
+
+users[index].name=row.cells[1].innerText;
+users[index].father=row.cells[2].innerText;
+users[index].mother=row.cells[3].innerText;
+
+localStorage.setItem("users",JSON.stringify(users));
+
+alert("Data Updated");
 
 }
 
 function downloadExcel(){
 
-let users = JSON.parse(localStorage.getItem("users")) || [];
+let csv="AppID,Name,Father,Mother,Post,ApplyDate,MarksheetURL\n";
 
-let csv="ApplicationID,Name,Father,Mother,DOB,Post,ApplyDate\n";
+users.forEach(u=>{
 
-users.forEach(function(u){
-
-csv+=`${u.appID},${u.name},${u.father},${u.mother},${u.dob},${u.post},${u.applydate}\n`;
+csv+=`${u.appID},${u.name},${u.father},${u.mother},${u.post},${u.applydate},${u.marksheet}\n`;
 
 });
 
-let blob = new Blob([csv],{type:"text/csv"});
+let blob=new Blob([csv],{type:"text/csv"});
 
 let a=document.createElement("a");
 
 a.href=URL.createObjectURL(blob);
 
-a.download="ABC_School_Applicants.csv";
+a.download="ABC_School_Data.csv";
 
 a.click();
 
@@ -104,16 +125,19 @@ a.click();
 <table>
 
 <tr>
-<th>Application ID</th>
+
+<th>App ID</th>
 <th>Name</th>
 <th>Father</th>
 <th>Mother</th>
-<th>DOB</th>
-<th>Post Applied</th>
-<th>Apply Date</th>
+<th>Post</th>
+<th>Date</th>
+<th>Marksheet</th>
+<th>Edit</th>
+
 </tr>
 
-<tbody id="tabledata"></tbody>
+<tbody id="data"></tbody>
 
 </table>
 
