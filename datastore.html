@@ -5,11 +5,7 @@
 
 <style>
 
-body{
-font-family:Arial;
-background:#f2f2f2;
-padding:40px;
-}
+body{font-family:Arial;background:#f2f2f2;padding:40px;}
 
 table{
 border-collapse:collapse;
@@ -28,6 +24,11 @@ background:#007BFF;
 color:white;
 }
 
+img{
+width:50px;
+height:50px;
+}
+
 button{
 padding:8px;
 margin:3px;
@@ -41,7 +42,7 @@ let users=[];
 
 function loadData(){
 
-users = JSON.parse(localStorage.getItem("users")) || [];
+users=JSON.parse(localStorage.getItem("users"))||[];
 
 let table="";
 
@@ -52,19 +53,18 @@ table+=`
 <tr>
 
 <td>${u.appID}</td>
-<td contenteditable="true">${u.name}</td>
-<td contenteditable="true">${u.father}</td>
-<td contenteditable="true">${u.mother}</td>
+<td>${u.name}</td>
+<td>${u.father}</td>
+<td>${u.mother}</td>
 <td>${u.post}</td>
 <td>${u.applydate}</td>
 
-<td>
-<a href="${u.marksheet}" target="_blank">View</a>
-</td>
+<td><img src="${u.photo}"></td>
+<td><img src="${u.signature}"></td>
 
-<td>
-<button onclick="saveEdit(${index},this)">Save</button>
-</td>
+<td><a href="${u.marksheet}" target="_blank">View</a></td>
+<td><a href="${u.birth}" target="_blank">View</a></td>
+<td><a href="${u.admit}" target="_blank">View</a></td>
 
 </tr>
 
@@ -76,38 +76,21 @@ document.getElementById("data").innerHTML=table;
 
 }
 
-function saveEdit(index,btn){
-
-let row = btn.parentNode.parentNode;
-
-users[index].name=row.cells[1].innerText;
-users[index].father=row.cells[2].innerText;
-users[index].mother=row.cells[3].innerText;
-
-localStorage.setItem("users",JSON.stringify(users));
-
-alert("Data Updated");
-
-}
-
 function downloadExcel(){
 
-let csv="AppID,Name,Father,Mother,Post,ApplyDate,MarksheetURL\n";
+let csv="AppID,Name,Father,Mother,Post,Date,Photo,Signature,Marksheet,Birth,Admit\n";
 
 users.forEach(u=>{
 
-csv+=`${u.appID},${u.name},${u.father},${u.mother},${u.post},${u.applydate},${u.marksheet}\n`;
+csv+=`${u.appID},${u.name},${u.father},${u.mother},${u.post},${u.applydate},${u.photo},${u.signature},${u.marksheet},${u.birth},${u.admit}\n`;
 
 });
 
 let blob=new Blob([csv],{type:"text/csv"});
-
 let a=document.createElement("a");
 
 a.href=URL.createObjectURL(blob);
-
 a.download="ABC_School_Data.csv";
-
 a.click();
 
 }
@@ -132,8 +115,11 @@ a.click();
 <th>Mother</th>
 <th>Post</th>
 <th>Date</th>
+<th>Photo</th>
+<th>Signature</th>
 <th>Marksheet</th>
-<th>Edit</th>
+<th>Birth</th>
+<th>Admit</th>
 
 </tr>
 
