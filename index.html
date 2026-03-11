@@ -12,7 +12,7 @@ padding:40px;
 }
 
 .container{
-width:600px;
+width:650px;
 margin:auto;
 background:white;
 padding:25px;
@@ -35,25 +35,27 @@ cursor:pointer;
 width:100%;
 }
 
-button:hover{
-background:#0056b3;
-}
-
 </style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 
 function generateID(){
-return "APP"+Math.floor(Math.random()*100000);
+return "ABC"+Date.now();
 }
 
-function submitForm(){
+async function submitForm(){
 
 event.preventDefault();
 
 let users = JSON.parse(localStorage.getItem("users")) || [];
 
 let appID = generateID();
+
+let marksheet = document.getElementById("marksheet").files[0];
+let birth = document.getElementById("birth").files[0];
+let admit = document.getElementById("admit").files[0];
 
 let user = {
 
@@ -63,7 +65,11 @@ father:document.getElementById("father").value,
 mother:document.getElementById("mother").value,
 dob:document.getElementById("dob").value,
 applydate:document.getElementById("applydate").value,
-post:document.getElementById("post").value
+post:document.getElementById("post").value,
+
+marksheet: marksheet ? URL.createObjectURL(marksheet) : "",
+birth: birth ? URL.createObjectURL(birth) : "",
+admit: admit ? URL.createObjectURL(admit) : ""
 
 };
 
@@ -71,41 +77,29 @@ users.push(user);
 
 localStorage.setItem("users",JSON.stringify(users));
 
-generateReceipt(user);
+generatePDF(user);
 
 document.getElementById("form").reset();
 
 }
 
-function generateReceipt(user){
+function generatePDF(user){
 
-let receipt =
-`ABC SCHOOL
+const { jsPDF } = window.jspdf;
 
-Application Receipt
+let doc = new jsPDF();
 
-Application ID: ${user.appID}
+doc.text("ABC SCHOOL",20,20);
+doc.text("Application Receipt",20,30);
 
-Name: ${user.name}
-Father Name: ${user.father}
-Mother Name: ${user.mother}
+doc.text("Application ID: "+user.appID,20,50);
+doc.text("Name: "+user.name,20,60);
+doc.text("Father Name: "+user.father,20,70);
+doc.text("Mother Name: "+user.mother,20,80);
+doc.text("Post Applied: "+user.post,20,90);
+doc.text("Apply Date: "+user.applydate,20,100);
 
-Post Applied: ${user.post}
-
-Application Date: ${user.applydate}
-
-Thank you for applying at ABC School
-`;
-
-let blob = new Blob([receipt],{type:"text/plain"});
-
-let a=document.createElement("a");
-
-a.href=URL.createObjectURL(blob);
-
-a.download=`Receipt_${user.appID}.txt`;
-
-a.click();
+doc.save("Receipt_"+user.appID+".pdf");
 
 alert("Application Submitted Successfully");
 
@@ -153,19 +147,13 @@ Applying For
 </select>
 
 Upload Marksheet
-<input type="file">
+<input type="file" id="marksheet">
 
 Upload Birth Certificate
-<input type="file">
+<input type="file" id="birth">
 
 Upload Admit Card
-<input type="file">
-
-Upload Certificates
-<input type="file">
-
-Upload Other Supporting Documents
-<input type="file">
+<input type="file" id="admit">
 
 <br><br>
 
