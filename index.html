@@ -1,217 +1,82 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>ABC School Application Form</title>
+<title>Job Application Form</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body{font-family:Arial;background:#f2f2f2;padding:40px;}
-.container{width:650px;margin:auto;background:white;padding:25px;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,0.2);}
-input,select{width:100%;padding:8px;margin:8px 0;}
-button{padding:10px;background:#007BFF;color:white;border:none;cursor:pointer;width:100%;}
+
+body{
+font-family:Arial;
+background:#f2f2f2;
+}
+
+.container{
+width:500px;
+margin:auto;
+background:white;
+padding:20px;
+margin-top:40px;
+border-radius:10px;
+box-shadow:0 0 10px gray;
+}
+
+h2{
+text-align:center;
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin-top:10px;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:15px;
+background:green;
+color:white;
+border:none;
+font-size:16px;
+}
+
 </style>
-
-<script>
-
-function generateID(){
-return "ABC"+Date.now();
-}
-
-function fileToBase64(file){
-return new Promise(resolve=>{
-let reader=new FileReader();
-reader.onload=()=>resolve(reader.result);
-reader.readAsDataURL(file);
-});
-}
-
-async function submitForm(event){
-
-event.preventDefault();
-
-let photo=document.getElementById("photo").files[0];
-let signature=document.getElementById("signature").files[0];
-let marksheet=document.getElementById("marksheet").files[0];
-let birth=document.getElementById("birth").files[0];
-let admit=document.getElementById("admit").files[0];
-
-if(photo && photo.size>50*1024){
-alert("Photo must be under 50KB");
-return;
-}
-
-if(signature && signature.size>20*1024){
-alert("Signature must be under 20KB");
-return;
-}
-
-let user={
-
-appID:generateID(),
-name:document.getElementById("name").value,
-father:document.getElementById("father").value,
-mother:document.getElementById("mother").value,
-dob:document.getElementById("dob").value,
-applydate:document.getElementById("applydate").value,
-post:document.getElementById("post").value,
-
-photo:photo?await fileToBase64(photo):"",
-signature:signature?await fileToBase64(signature):"",
-marksheet:marksheet?await fileToBase64(marksheet):"",
-birth:birth?await fileToBase64(birth):"",
-admit:admit?await fileToBase64(admit):""
-
-};
-
-fetch("https://script.google.com/macros/s/AKfycbygF9-Qp_BY1TdNiwNQpO70iq9-qzTK09cyLpKoXD73F6mcGnhue1pzv5N-0maMO-k/exec",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify(user)
-})
-.then(res=>res.json())
-.then(data=>{
-
-alert("Application Submitted Successfully!");
-
-generateReceipt(user);
-
-document.getElementById("form").reset();
-
-})
-.catch(err=>{
-console.log(err);
-alert("Error submitting form");
-});
-
-}
-
-function generateReceipt(user){
-
-let receipt=`
-
-<html>
-<head>
-<title>Receipt</title>
-<style>
-body{font-family:Arial;padding:20px}
-table{width:100%;border-collapse:collapse}
-td,th{border:1px solid black;padding:10px}
-</style>
-</head>
-
-<body>
-
-<h1>ABC School</h1>
-
-<table>
-
-<tr>
-<th>Application ID</th>
-<td>${user.appID}</td>
-</tr>
-
-<tr>
-<th>Name</th>
-<td>${user.name}</td>
-</tr>
-
-<tr>
-<th>Date Of Birth</th>
-<td>${user.dob}</td>
-</tr>
-
-<tr>
-<th>Application Date</th>
-<td>${user.applydate}</td>
-</tr>
-
-<tr>
-<th>Post</th>
-<td>${user.post}</td>
-</tr>
-
-<tr>
-<th>Help Line</th>
-<td>7896220943</td>
-</tr>
-
-</table>
-
-</body>
-</html>
-
-`;
-
-let blob=new Blob([receipt],{type:"text/html"});
-
-let a=document.createElement("a");
-
-a.href=URL.createObjectURL(blob);
-
-a.download="Receipt_"+user.appID+".html";
-
-a.click();
-
-}
-
-</script>
-
 </head>
 
 <body>
 
 <div class="container">
 
-<h2>ABC School Job Application</h2>
+<h2>Job Application</h2>
 
-<form onsubmit="submitForm(event)">
+<form action="submit.php" method="post">
 
-Name
-<input type="text" id="name" required>
+<label>Name</label>
+<input type="text" name="name" required>
 
-Father Name
-<input type="text" id="father">
+<label>Father Name</label>
+<input type="text" name="father">
 
-Mother Name
-<input type="text" id="mother">
+<label>Mother Name</label>
+<input type="text" name="mother">
 
-Date Of Birth
-<input type="date" id="dob" required>
+<label>Email</label>
+<input type="email" name="email">
 
-Applying Date
-<input type="date" id="applydate" required>
+<label>Phone</label>
+<input type="text" name="phone">
 
-Applying For
-
-<select id="post">
-
-<option>Peon</option>
-<option>Front Desk</option>
-<option>Website Design Faculty</option>
-<option>Python Faculty</option>
-<option>IOT Faculty</option>
-<option>Model Faculty</option>
-<option>English Teacher</option>
-
+<label>Qualification</label>
+<select name="qualification">
+<option>Class 8</option>
+<option>Class 9</option>
+<option>Class 10</option>
+<option>Class 11</option>
+<option>Class 12</option>
+<option>BA</option>
+<option>MA</option>
 </select>
-
-Upload Marksheet
-<input type="file" id="marksheet">
-
-Upload Birth Certificate
-<input type="file" id="birth">
-
-Upload Admit Card
-<input type="file" id="admit">
-
-Passport Photo
-<input type="file" id="photo">
-
-Signature
-<input type="file" id="signature">
-
-<br><br>
 
 <button type="submit">Submit Application</button>
 
@@ -221,4 +86,3 @@ Signature
 
 </body>
 </html>
-
