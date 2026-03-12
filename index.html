@@ -161,6 +161,25 @@ document.body.removeChild(a);
 
 }
 
+
+
+  fetch("https://script.google.com/macros/s/AKfycbz1CiaTO6rj771EoQQ8TFRcfkyzvZJQFQ7JLAQQGZJt8QJzzR0UeIzD-rYuS-KUHKf8/exec",{
+
+method:"POST",
+body:JSON.stringify(user)
+
+})
+.then(res=>res.json())
+.then(data=>{
+
+alert("Application Submitted Successfully!");
+
+generateReceipt(user);
+
+document.getElementById("form").reset();
+
+});
+
 </script>
 
 </head>
@@ -233,4 +252,5 @@ Signature (Max 20KB)
 
 </body>
 </html>
+
 
