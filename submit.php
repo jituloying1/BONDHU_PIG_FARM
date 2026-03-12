@@ -1,23 +1,22 @@
 <?php
 
-$conn = new mysqli("localhost","root","","userform");
+$name=$_POST['name'];
+$father=$_POST['father'];
+$mother=$_POST['mother'];
+$email=$_POST['email'];
+$phone=$_POST['phone'];
+$qualification=$_POST['qualification'];
 
-$name = $_POST['name'];
-$father = $_POST['father_name'];
-$mobile = $_POST['mobile'];
-$email = $_POST['email'];
-$address = $_POST['address'];
-$qualification = $_POST['qualification'];
-$district = $_POST['district'];
-$state = $_POST['state'];
-$pincode = $_POST['pincode'];
+$file="applications.csv";
 
-$sql="INSERT INTO users(name,father_name,mobile,email,address,qualification,district,state,pincode)
+$data=[$name,$father,$mother,$email,$phone,$qualification];
 
-VALUES('$name','$father','$mobile','$email','$address','$qualification','$district','$state','$pincode')";
+$fp=fopen($file,'a');
 
-$conn->query($sql);
+fputcsv($fp,$data);
 
-echo "Form Submitted Successfully";
+fclose($fp);
+
+echo "<h2>Application Submitted Successfully</h2>";
 
 ?>
