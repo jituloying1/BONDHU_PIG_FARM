@@ -161,13 +161,47 @@ document.body.removeChild(a);
 
 }
 
+async function submitForm(event){
 
+event.preventDefault();
 
-  fetch("https://script.google.com/macros/s/AKfycbz1CiaTO6rj771EoQQ8TFRcfkyzvZJQFQ7JLAQQGZJt8QJzzR0UeIzD-rYuS-KUHKf8/exec",{
+let photo=document.getElementById("photo").files[0];
+let signature=document.getElementById("signature").files[0];
+let marksheet=document.getElementById("marksheet").files[0];
+let birth=document.getElementById("birth").files[0];
+let admit=document.getElementById("admit").files[0];
 
+if(photo && photo.size>50*1024){
+alert("Photo must be under 50KB");
+return;
+}
+
+if(signature && signature.size>20*1024){
+alert("Signature must be under 20KB");
+return;
+}
+
+let user={
+
+appID:generateID(),
+name:document.getElementById("name").value,
+father:document.getElementById("father").value,
+mother:document.getElementById("mother").value,
+dob:document.getElementById("dob").value,
+applydate:document.getElementById("applydate").value,
+post:document.getElementById("post").value,
+
+photo:photo?await fileToBase64(photo):"",
+signature:signature?await fileToBase64(signature):"",
+marksheet:marksheet?await fileToBase64(marksheet):"",
+birth:birth?await fileToBase64(birth):"",
+admit:admit?await fileToBase64(admit):""
+
+};
+
+fetch("https://script.google.com/macros/s/AKfycbz1CiaTO6rj771EoQQ8TFRcfkyzvZJQFQ7JLAQQGZJt8QJzzR0UeIzD-rYuS-KUHKf8/exec",{
 method:"POST",
 body:JSON.stringify(user)
-
 })
 .then(res=>res.json())
 .then(data=>{
@@ -178,7 +212,13 @@ generateReceipt(user);
 
 document.getElementById("form").reset();
 
+})
+.catch(err=>{
+alert("Error submitting form");
+console.log(err);
 });
+
+}
 
 </script>
 
@@ -252,5 +292,6 @@ Signature (Max 20KB)
 
 </body>
 </html>
+
 
 
