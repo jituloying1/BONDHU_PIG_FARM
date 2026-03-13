@@ -114,7 +114,6 @@ background:#0056b3;
 </form>
 
 </div>
-
 <script>
 const scriptURL = "https://script.google.com/macros/s/AKfycbzyLKXq7OLGSkKJRJ0cyGWlM6X0utHwYhoJd9ADSXGahR2GpONFG03w0EsLis3C3Trw/exec";
 const form = document.getElementById("jobForm");
@@ -125,13 +124,13 @@ form.addEventListener("submit", async e => {
   let obj = {};
   for (let [key, value] of new FormData(form).entries()) {
     if (value instanceof File && value.size > 0) {
-      obj[key] = await toBase64(value);
+      obj[key] = await toBase64(value);   // convert file to Base64
     } else {
       obj[key] = value;
     }
   }
 
-  console.log(obj);   // <-- paste it here
+  console.log(obj);   // Debug: check Base64 strings in console
 
   fetch(scriptURL, {
     method: "POST",
@@ -145,11 +144,10 @@ form.addEventListener("submit", async e => {
   .catch(err => alert("Submission Error: " + err));
 });
 
-
 function toBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result); // returns "data:image/png;base64,..."
+    reader.onload = () => resolve(reader.result); // "data:image/png;base64,..."
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
@@ -157,7 +155,9 @@ function toBase64(file) {
 </script>
 
 
+
 </body>
 </html>   
+
 
 
