@@ -1,4 +1,4 @@
-<!--<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <title>Job Application System</title>
@@ -94,110 +94,63 @@ background:#0056b3;
 <option>PHD</option>
 </select>
 
+<label>Passport Photo (Max 100KB)</label>
+<input type="file" name="photo" required>
 
+<label>Signature (Max 50KB)</label>
+<input type="file" name="sign">
+
+<label>Admit Card</label>
+<input type="file" name="admit">
+
+<label>Marksheet</label>
+<input type="file" name="marksheet">
+
+<label>Extra Document</label>
+<input type="file" name="doc">
 
 <button type="submit">Submit Application</button>
 
 </form>
 
 </div>
+
 <script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbzyLKXq7OLGSkKJRJ0cyGWlM6X0utHwYhoJd9ADSXGahR2GpONFG03w0EsLis3C3Trw/exec";
-const form = document.getElementById("jobForm");
 
-form.addEventListener("submit", async e => {
-  e.preventDefault();
+const scriptURL="https://script.google.com/macros/s/AKfycbyTMyosGRCbiOeI6OX1sepijsMkGzCHAASsylLUFWWQlSST4pEde055gER7_M0wbXDV/exec";
 
-  let obj = {};
-  for (let [key, value] of new FormData(form).entries()) {
-    if (value instanceof File && value.size > 0) {
-      obj[key] = await toBase64(value);   // convert file to Base64
-    } else {
-      obj[key] = value;
-    }
-  }
+const form=document.getElementById("jobForm");
 
-  console.log(obj);   // Debug: check Base64 strings in console
+form.addEventListener("submit",e=>{
 
-  fetch(scriptURL, {
-    method: "POST",
-    body: JSON.stringify(obj)
-  })
-  .then(res => res.text())
-  .then(() => {
-    alert("Application Submitted Successfully");
-    form.reset();
-  })
-  .catch(err => alert("Submission Error: " + err));
+e.preventDefault();
+
+let formData=new FormData(form);
+
+fetch(scriptURL,{
+method:"POST",
+body:formData
+})
+
+.then(res=>res.text())
+.then(data=>{
+
+alert("Application Submitted Successfully");
+
+form.reset();
+
+})
+.catch(error=>{
+
+alert("Submission Error");
+
+console.log(error);
+
 });
 
-function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result); // "data:image/png;base64,..."
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
+});
+
 </script>
 
-
-
 </body>
-</html>   --->
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Photo Upload</title>
-</head>
-<body>
-  <form id="uploadForm">
-    <label>Upload Photo:</label>
-    <input type="file" name="photo" accept="image/*" required>
-    <button type="submit">Submit</button>
-  </form>
-
-  <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycby2Rl6aXGAGJ97c0yC55dz-uzZpXMctiEYjpLvBoqCVL-AJk2IxRICHRo7-F9FUzcsN/exec"; // replace with your Apps Script web app URL
-    const form = document.getElementById("uploadForm");
-    form.addEventListener("submit", async e => {
-      e.preventDefault();
-
-      let obj = {};
-      for (let [key, value] of new FormData(form).entries()) {
-        if (value instanceof File && value.size > 0) {
-          obj[key] = await toBase64(value);
-        }
-      }
-
-      fetch(scriptURL, {
-        method: "POST",
-        body: JSON.stringify(obj)
-      })
-      .then(res => res.text())
-      .then(() => {
-        alert("Uploaded successfully!");
-        form.reset();
-      })
-      .catch(err => alert("Error: " + err));
-    });
-
-    function toBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    }
-  </script>
-</body>
-</html>
-
-
-
-
-
-
-
-
+</html> 
