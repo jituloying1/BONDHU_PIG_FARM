@@ -88,7 +88,6 @@ margin-top:10px;
 
 <label>Qualification</label>
 <select id="qualification">
-
 <option>10th</option>
 <option>XI</option>
 <option>XII</option>
@@ -99,7 +98,6 @@ margin-top:10px;
 <option>MA</option>
 <option>MPHIL</option>
 <option>PHD</option>
-
 </select>
 
 <label>Passport Size Photo</label>
@@ -125,7 +123,6 @@ I declare that the information given above is correct.
 <button onclick="previewData()">Preview</button>
 
 </div>
-
 
 <div id="previewPage" class="preview">
 
@@ -158,7 +155,6 @@ I declare that the information given above is correct.
 
 </div>
 
-
 <script>
 
 function previewData(){
@@ -168,114 +164,87 @@ alert("Please accept declaration");
 return;
 }
 
-formPage.style.display="none";
-previewPage.style.display="block";
+document.getElementById("formPage").style.display="none";
+document.getElementById("previewPage").style.display="block";
 
-pname.innerText=name.value;
-pfather.innerText=father.value;
-pmother.innerText=mother.value;
-pemail.innerText=email.value;
-pphone.innerText=phone.value;
-padhar.innerText=adhar.value;
-pdob.innerText=dob.value;
-papply.innerText=applydate.value;
-pqualification.innerText=qualification.value;
+document.getElementById("pname").innerText=document.getElementById("name").value;
+document.getElementById("pfather").innerText=document.getElementById("father").value;
+document.getElementById("pmother").innerText=document.getElementById("mother").value;
+document.getElementById("pemail").innerText=document.getElementById("email").value;
+document.getElementById("pphone").innerText=document.getElementById("phone").value;
+document.getElementById("padhar").innerText=document.getElementById("adhar").value;
+document.getElementById("pdob").innerText=document.getElementById("dob").value;
+document.getElementById("papply").innerText=document.getElementById("applydate").value;
+document.getElementById("pqualification").innerText=document.getElementById("qualification").value;
 
-let photoFile = photo.files[0];
-let signFile = sign.files[0];
+let photoFile=document.getElementById("photo").files[0];
+let signFile=document.getElementById("sign").files[0];
 
 if(photoFile){
-pphoto.src = URL.createObjectURL(photoFile);
+document.getElementById("pphoto").src=URL.createObjectURL(photoFile);
 }
 
 if(signFile){
-psign.src = URL.createObjectURL(signFile);
+document.getElementById("psign").src=URL.createObjectURL(signFile);
 }
 
-if(admit.files[0]){
-padmit.innerText = admit.files[0].name;
+if(document.getElementById("admit").files[0]){
+document.getElementById("padmit").innerText=document.getElementById("admit").files[0].name;
 }
 
-if(marksheet.files[0]){
-pmarksheet.innerText = marksheet.files[0].name;
+if(document.getElementById("marksheet").files[0]){
+document.getElementById("pmarksheet").innerText=document.getElementById("marksheet").files[0].name;
 }
 
 }
-
-
 
 function fileToBase64(file){
 return new Promise((resolve,reject)=>{
-
-let reader = new FileReader();
-
+let reader=new FileReader();
 reader.readAsDataURL(file);
-
 reader.onload=()=>resolve(reader.result);
-
 reader.onerror=error=>reject(error);
-
 });
 }
 
-
-
 async function submitForm(){
 
-let photo64 = photo.files[0] ? await fileToBase64(photo.files[0]) : "";
-let sign64 = sign.files[0] ? await fileToBase64(sign.files[0]) : "";
-let admit64 = admit.files[0] ? await fileToBase64(admit.files[0]) : "";
-let marksheet64 = marksheet.files[0] ? await fileToBase64(marksheet.files[0]) : "";
-let doc64 = doc.files[0] ? await fileToBase64(doc.files[0]) : "";
+let photo=document.getElementById("photo").files[0];
+let sign=document.getElementById("sign").files[0];
+let admit=document.getElementById("admit").files[0];
+let marksheet=document.getElementById("marksheet").files[0];
+let doc=document.getElementById("doc").files[0];
 
 let data={
-
-name:name.value,
-father:father.value,
-mother:mother.value,
-email:email.value,
-phone:phone.value,
-adhar:adhar.value,
-dob:dob.value,
-applydate:applydate.value,
-qualification:qualification.value,
-
-photo:photo64,
-sign:sign64,
-admit:admit64,
-marksheet:marksheet64,
-doc:doc64
-
+name:document.getElementById("name").value,
+father:document.getElementById("father").value,
+mother:document.getElementById("mother").value,
+email:document.getElementById("email").value,
+phone:document.getElementById("phone").value,
+adhar:document.getElementById("adhar").value,
+dob:document.getElementById("dob").value,
+applydate:document.getElementById("applydate").value,
+qualification:document.getElementById("qualification").value,
+photo:photo?await fileToBase64(photo):"",
+sign:sign?await fileToBase64(sign):"",
+admit:admit?await fileToBase64(admit):"",
+marksheet:marksheet?await fileToBase64(marksheet):"",
+doc:doc?await fileToBase64(doc):""
 };
 
 fetch("https://script.google.com/macros/s/AKfycbyUhWj8fPPOBADA4VIgBmuTllLeq1TW1i0w11A-3jmyNCW5I85w6gZySKHgv4ReXuuu/exec",{
-
 method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify(data)
-
 })
-
 .then(res=>res.json())
-
 .then(res=>{
-
 alert("Application Submitted Successfully");
-
 location.reload();
-
 })
-
 .catch(err=>{
-
 alert("Submit Error");
-
 console.log(err);
-
 });
 
 }
