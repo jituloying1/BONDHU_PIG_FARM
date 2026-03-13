@@ -39,6 +39,7 @@ background:green;
 color:white;
 border:none;
 font-size:16px;
+cursor:pointer;
 }
 
 </style>
@@ -50,7 +51,7 @@ font-size:16px;
 
 <h2>Job Application</h2>
 
-<form action="submit.php" method="post">
+<form>
 
 <label>Name</label>
 <input type="text" name="name" required>
@@ -67,6 +68,14 @@ font-size:16px;
 <label>Phone</label>
 <input type="text" name="phone">
 
+<label>Gender</label>
+<select name="gender">
+<option value="">Select Gender</option>
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+
 <label>Qualification</label>
 <select name="qualification">
 <option>Class 8</option>
@@ -78,11 +87,144 @@ font-size:16px;
 <option>MA</option>
 </select>
 
+<label>Select State</label>
+<select id="state" onchange="loadDistricts()">
+<option>Select State</option>
+<option>Assam</option>
+<option>Arunachal Pradesh</option>
+<option>Bihar</option>
+<option>Delhi</option>
+<option>Goa</option>
+<option>Gujarat</option>
+<option>Haryana</option>
+<option>Jharkhand</option>
+<option>Karnataka</option>
+<option>Kerala</option>
+<option>Madhya Pradesh</option>
+<option>Maharashtra</option>
+<option>Manipur</option>
+<option>Meghalaya</option>
+<option>Nagaland</option>
+<option>Odisha</option>
+<option>Punjab</option>
+<option>Rajasthan</option>
+<option>Sikkim</option>
+<option>Tamil Nadu</option>
+<option>Telangana</option>
+<option>Tripura</option>
+<option>Uttar Pradesh</option>
+<option>West Bengal</option>
+</select>
+
+<label>Select District</label>
+<select id="district">
+<option>Select District</option>
+</select>
+
+<label>Pincode</label>
+<input type="text" id="pincode" onblur="getPostOffice()">
+
+<label>Post Office</label>
+<input type="text" id="postoffice" readonly>
+
+<h3>Upload Documents</h3>
+
+<label>Upload Photo</label>
+<input type="file" accept="image/*">
+
+<label>Upload Signature</label>
+<input type="file" accept="image/*">
+
+<label>Upload Admit Card</label>
+<input type="file">
+
+<label>Upload Aadhaar Card</label>
+<input type="file">
+
+<label>Upload Marksheet</label>
+<input type="file">
+
+<label>Upload Caste Certificate</label>
+<input type="file">
+
 <button type="submit">Submit Application</button>
 
 </form>
 
 </div>
+
+
+<script>
+
+const districts = {
+
+"Assam":[
+"Baksa","Barpeta","Biswanath","Bongaigaon","Cachar","Charaideo",
+"Chirang","Darrang","Dhemaji","Dhubri","Dibrugarh","Goalpara",
+"Golaghat","Hailakandi","Hojai","Jorhat","Kamrup","Kamrup Metro",
+"Karbi Anglong","Karimganj","Kokrajhar","Lakhimpur","Majuli",
+"Morigaon","Nagaon","Nalbari","Sivasagar","Sonitpur",
+"South Salmara","Tinsukia","Udalguri","West Karbi Anglong"
+],
+
+"Bihar":[
+"Patna","Gaya","Bhagalpur","Muzaffarpur","Darbhanga"
+],
+
+"Delhi":[
+"Central Delhi","North Delhi","South Delhi"
+]
+
+};
+
+function loadDistricts(){
+
+let state=document.getElementById("state").value;
+let district=document.getElementById("district");
+
+district.innerHTML="<option>Select District</option>";
+
+if(districts[state]){
+
+districts[state].forEach(function(d){
+
+let option=document.createElement("option");
+option.text=d;
+district.add(option);
+
+});
+
+}
+
+}
+
+function getPostOffice(){
+
+let pin=document.getElementById("pincode").value;
+
+fetch("https://api.postalpincode.in/pincode/"+pin)
+
+.then(response=>response.json())
+
+.then(data=>{
+
+if(data[0].Status=="Success"){
+
+document.getElementById("postoffice").value=data[0].PostOffice[0].Name;
+
+}
+
+else{
+
+document.getElementById("postoffice").value="Invalid Pincode";
+
+}
+
+});
+
+}
+
+</script>
 
 </body>
 </html>
