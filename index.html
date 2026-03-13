@@ -116,41 +116,44 @@ background:#0056b3;
 </div>
 
 <script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbzyLKXq7OLGSkKJRJ0cyGWlM6X0utHwYhoJd9ADSXGahR2GpONFG03w0EsLis3C3Trw/exec";
+const form = document.getElementById("jobForm");
 
-const scriptURL="https://script.google.com/macros/s/AKfycbyTMyosGRCbiOeI6OX1sepijsMkGzCHAASsylLUFWWQlSST4pEde055gER7_M0wbXDV/exec";
+form.addEventListener("submit", async e => {
+  e.preventDefault();
 
-const form=document.getElementById("jobForm");
+  let obj = {};
+  for (let [key, value] of new FormData(form).entries()) {
+    if (value instanceof File && value.size > 0) {
+      obj[key] = await toBase64(value);   // convert file to Base64
+    } else {
+      obj[key] = value;                   // keep text values as-is
+    }
+  }
 
-form.addEventListener("submit",e=>{
-
-e.preventDefault();
-
-let formData=new FormData(form);
-
-fetch(scriptURL,{
-method:"POST",
-body:formData
-})
-
-.then(res=>res.text())
-.then(data=>{
-
-alert("Application Submitted Successfully");
-
-form.reset();
-
-})
-.catch(error=>{
-
-alert("Submission Error");
-
-console.log(error);
-
+  fetch(scriptURL, {
+    method: "POST",
+    body: JSON.stringify(obj)             // send JSON instead of FormData
+  })
+  .then(res => res.text())
+  .then(() => {
+    alert("Application Submitted Successfully");
+    form.reset();
+  })
+  .catch(err => alert("Submission Error: " + err));
 });
 
-});
-
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result); // returns "data:image/png;base64,..."
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 </script>
+
 
 </body>
 </html>   
+
