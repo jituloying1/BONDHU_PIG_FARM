@@ -76,73 +76,80 @@ button:hover{background:#0056b3;}
 </div>
 
 <script>
-const scriptURL="https://script.google.com/macros/s/AKfycbzyLKXq7OLGSkKJRJ0cyGWlM6X0utHwYhoJd9ADSXGahR2GpONFG03w0EsLis3C3Trw/exec"; // Replace with your Apps Script URL
+const scriptURL = "https://script.google.com/macros/s/AKfycbzyLKXq7OLGSkKJRJ0cyGWlM6X0utHwYhoJd9ADSXGahR2GpONFG03w0EsLis3C3Trw/exec";
 
-const form=document.getElementById("jobForm");
+const form = document.getElementById("jobForm");
 
-form.addEventListener("submit", async e=>{
-    e.preventDefault();
-    const formData = new FormData(form);
-    const files = ["photo","sign","admit","marksheet","doc"];
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    // File size validation
-    if(form.photo.files[0] && form.photo.files[0].size>100*1024){ alert("Photo max 100KB"); return; }
-    if(form.sign.files[0] && form.sign.files[0].size>50*1024){ alert("Signature max 50KB"); return; }
+  const formData = new FormData(form);
+  const files = ["photo", "sign", "admit", "marksheet", "doc"];
+  const base64Files = {};
 
-    // Convert files to Base64
-    const base64Files = {};
-    for(let f of files){
-        const file=formData.get(f);
-        base64Files[f] = file && file.size>0 ? await fileToBase64(file) : "";
+  for (let f of files) {
+    const file = formData.get(f);
+    if (file && file.size > 0) {
+      // File size validation
+      if ((f === "photo" && file.size > 100 * 1024) || (f === "sign" && file.size > 50 * 1024)) {
+        alert(`${f} file is too big`);
+        return;
+      }
+      base64Files[f] = await fileToBase64(file);
+    } else {
+      base64Files[f] = "";
     }
+  }
 
-    // Prepare JSON
-    const data={
-        name: formData.get("name"),
-        father: formData.get("father"),
-        mother: formData.get("mother"),
-        email: formData.get("email"),
-        phone: formData.get("phone"),
-        adhar: formData.get("adhar"),
-        dob: formData.get("dob"),
-        qualification: formData.get("qualification"),
-        gender: formData.get("gender"),
-        caste: formData.get("caste"),
-        photo: base64Files.photo,
-        sign: base64Files.sign,
-        admit: base64Files.admit,
-        marksheet: base64Files.marksheet,
-        doc: base64Files.doc
-    };
+  const data = {
+    name: formData.get("name"),
+    father: formData.get("father"),
+    mother: formData.get("mother"),
+    email: formData.get("email"),
+    phone: formData.get("phone"),
+    adhar: formData.get("adhar"),
+    dob: formData.get("dob"),
+    qualification: formData.get("qualification"),
+    gender: formData.get("gender"),
+    caste: formData.get("caste"),
+    photo: base64Files.photo,
+    sign: base64Files.sign,
+    admit: base64Files.admit,
+    marksheet: base64Files.marksheet,
+    doc: base64Files.doc
+  };
 
-    // Send JSON
-    fetch(scriptURL,{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify(data)
-    })
-    .then(res=>res.json())
-    .then(resp=>{
-        if(resp.result==="success"){ alert("Application Submitted Successfully"); form.reset(); }
-        else{ alert("Submission Error: "+resp.message); }
-    })
-    .catch(err=>{
-        console.error(err);
-        alert("Submission Error: Check console");
-    });
+  fetch(scriptURL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(resp => {
+    if (resp.result === "success") {
+      alert("Application submitted successfully");
+      form.reset();
+    } else {
+      alert("Error: " + resp.message);
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Submission error, check console");
+  });
 });
 
-// Convert file to Base64
-function fileToBase64(file){
-    return new Promise((resolve,reject)=>{
-        const reader=new FileReader();
-        reader.onload=()=>resolve(reader.result);
-        reader.onerror=error=>reject(error);
-        reader.readAsDataURL(file);
-    });
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = err => reject(err);
+    reader.readAsDataURL(file);
+  });
 }
 </script>
 
 </body>
 </html>
+
 
