@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Job Application Form</title>
+<title>Job Application System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 
 body{
 font-family:Arial;
-background:#f2f2f2;
+background:#f4f4f4;
 }
 
 .container{
@@ -16,7 +16,7 @@ width:500px;
 margin:auto;
 background:white;
 padding:20px;
-margin-top:40px;
+margin-top:30px;
 border-radius:10px;
 box-shadow:0 0 10px gray;
 }
@@ -33,22 +33,18 @@ margin-bottom:15px;
 }
 
 button{
-padding:10px;
-background:green;
+width:100%;
+padding:12px;
+background:#007bff;
 color:white;
 border:none;
-width:100%;
 font-size:16px;
 cursor:pointer;
+border-radius:5px;
 }
 
-.preview{
-display:none;
-}
-
-img{
-width:120px;
-margin-top:10px;
+button:hover{
+background:#0056b3;
 }
 
 </style>
@@ -60,34 +56,32 @@ margin-top:10px;
 
 <h2>Job Application Form</h2>
 
-<div id="formPage">
+<form id="jobForm">
 
 <label>Name</label>
-<input type="text" id="name">
+<input type="text" name="name" required>
 
 <label>Father Name</label>
-<input type="text" id="father">
+<input type="text" name="father" required>
 
 <label>Mother Name</label>
-<input type="text" id="mother">
+<input type="text" name="mother">
 
 <label>Email</label>
-<input type="email" id="email">
+<input type="email" name="email" required>
 
 <label>Phone Number</label>
-<input type="text" id="phone">
+<input type="text" name="phone" required>
 
 <label>Aadhar Number</label>
-<input type="text" id="adhar">
+<input type="text" name="adhar">
 
 <label>Date of Birth</label>
-<input type="date" id="dob">
-
-<label>Apply Date</label>
-<input type="date" id="applydate">
+<input type="date" name="dob">
 
 <label>Qualification</label>
-<select id="qualification">
+
+<select name="qualification">
 <option>10th</option>
 <option>XI</option>
 <option>XII</option>
@@ -100,157 +94,63 @@ margin-top:10px;
 <option>PHD</option>
 </select>
 
-<label>Passport Size Photo</label>
-<input type="file" id="photo" accept="image/*">
+<label>Passport Photo (Max 100KB)</label>
+<input type="file" name="photo" required>
 
-<label>Signature</label>
-<input type="file" id="sign" accept="image/*">
+<label>Signature (Max 50KB)</label>
+<input type="file" name="sign">
 
-<label>Admit Card Upload</label>
-<input type="file" id="admit">
+<label>Admit Card</label>
+<input type="file" name="admit">
 
-<label>Marksheet Upload</label>
-<input type="file" id="marksheet">
+<label>Marksheet</label>
+<input type="file" name="marksheet">
 
-<label>Extra Supporting Document</label>
-<input type="file" id="doc">
+<label>Extra Document</label>
+<input type="file" name="doc">
 
-<label>
-<input type="checkbox" id="declaration">
-I declare that the information given above is correct.
-</label>
+<button type="submit">Submit Application</button>
 
-<button onclick="previewData()">Preview</button>
-
-</div>
-
-<div id="previewPage" class="preview">
-
-<h2>Application Preview</h2>
-
-<p><b>Name:</b> <span id="pname"></span></p>
-<p><b>Father:</b> <span id="pfather"></span></p>
-<p><b>Mother:</b> <span id="pmother"></span></p>
-<p><b>Email:</b> <span id="pemail"></span></p>
-<p><b>Phone:</b> <span id="pphone"></span></p>
-<p><b>Aadhar:</b> <span id="padhar"></span></p>
-<p><b>DOB:</b> <span id="pdob"></span></p>
-<p><b>Apply Date:</b> <span id="papply"></span></p>
-<p><b>Qualification:</b> <span id="pqualification"></span></p>
-
-<p><b>Photo</b></p>
-<img id="pphoto">
-
-<p><b>Signature</b></p>
-<img id="psign">
-
-<p><b>Admit Card:</b> <span id="padmit"></span></p>
-<p><b>Marksheet:</b> <span id="pmarksheet"></span></p>
-
-<br>
-
-<button onclick="submitForm()">Submit Application</button>
-
-</div>
+</form>
 
 </div>
 
 <script>
 
-function previewData(){
+const scriptURL="PASTE_YOUR_SCRIPT_URL_HERE";
 
-if(!document.getElementById("declaration").checked){
-alert("Please accept declaration");
-return;
-}
+const form=document.getElementById("jobForm");
 
-document.getElementById("formPage").style.display="none";
-document.getElementById("previewPage").style.display="block";
+form.addEventListener("submit",e=>{
 
-document.getElementById("pname").innerText=document.getElementById("name").value;
-document.getElementById("pfather").innerText=document.getElementById("father").value;
-document.getElementById("pmother").innerText=document.getElementById("mother").value;
-document.getElementById("pemail").innerText=document.getElementById("email").value;
-document.getElementById("pphone").innerText=document.getElementById("phone").value;
-document.getElementById("padhar").innerText=document.getElementById("adhar").value;
-document.getElementById("pdob").innerText=document.getElementById("dob").value;
-document.getElementById("papply").innerText=document.getElementById("applydate").value;
-document.getElementById("pqualification").innerText=document.getElementById("qualification").value;
+e.preventDefault();
 
-let photoFile=document.getElementById("photo").files[0];
-let signFile=document.getElementById("sign").files[0];
+let formData=new FormData(form);
 
-if(photoFile){
-document.getElementById("pphoto").src=URL.createObjectURL(photoFile);
-}
-
-if(signFile){
-document.getElementById("psign").src=URL.createObjectURL(signFile);
-}
-
-if(document.getElementById("admit").files[0]){
-document.getElementById("padmit").innerText=document.getElementById("admit").files[0].name;
-}
-
-if(document.getElementById("marksheet").files[0]){
-document.getElementById("pmarksheet").innerText=document.getElementById("marksheet").files[0].name;
-}
-
-}
-
-function fileToBase64(file){
-return new Promise((resolve,reject)=>{
-let reader=new FileReader();
-reader.readAsDataURL(file);
-reader.onload=()=>resolve(reader.result);
-reader.onerror=error=>reject(error);
-});
-}
-
-async function submitForm(){
-
-let photo=document.getElementById("photo").files[0];
-let sign=document.getElementById("sign").files[0];
-let admit=document.getElementById("admit").files[0];
-let marksheet=document.getElementById("marksheet").files[0];
-let doc=document.getElementById("doc").files[0];
-
-let data={
-name:document.getElementById("name").value,
-father:document.getElementById("father").value,
-mother:document.getElementById("mother").value,
-email:document.getElementById("email").value,
-phone:document.getElementById("phone").value,
-adhar:document.getElementById("adhar").value,
-dob:document.getElementById("dob").value,
-applydate:document.getElementById("applydate").value,
-qualification:document.getElementById("qualification").value,
-photo:photo?await fileToBase64(photo):"",
-sign:sign?await fileToBase64(sign):"",
-admit:admit?await fileToBase64(admit):"",
-marksheet:marksheet?await fileToBase64(marksheet):"",
-doc:doc?await fileToBase64(doc):""
-};
-
-fetch("https://script.google.com/macros/s/AKfycbwgmJDf9qiM9Tij38wu95-mu7l1cmFuNieXnOq5B13l3wd-JzG2ix9hIDKlMfs1yLLn/exec",{
+fetch(scriptURL,{
 method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify(data)
+body:formData
 })
-.then(res=>res.json())
-.then(res=>{
+
+.then(res=>res.text())
+.then(data=>{
+
 alert("Application Submitted Successfully");
-location.reload();
+
+form.reset();
+
 })
-.catch(err=>{
-alert("Submit Error");
-console.log(err);
+.catch(error=>{
+
+alert("Submission Error");
+
+console.log(error);
+
 });
 
-}
+});
 
 </script>
 
 </body>
 </html>
-
