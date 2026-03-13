@@ -115,37 +115,66 @@ background:#0056b3;
 
 </div>
 
+
 <script>
 
 const scriptURL="https://script.google.com/macros/s/AKfycbyTMyosGRCbiOeI6OX1sepijsMkGzCHAASsylLUFWWQlSST4pEde055gER7_M0wbXDV/exec";
 
-const form=document.getElementById("jobForm");
+function fileToBase64(file){
+return new Promise((resolve,reject)=>{
+let reader=new FileReader();
+reader.readAsDataURL(file);
+reader.onload=()=>resolve(reader.result);
+reader.onerror=error=>reject(error);
+});
+}
 
-form.addEventListener("submit",e=>{
+document.getElementById("jobForm").addEventListener("submit",async function(e){
 
 e.preventDefault();
 
-let formData=new FormData(form);
+let form=this;
+
+let photo64=form.photo.files[0] ? await fileToBase64(form.photo.files[0]) : "";
+let sign64=form.sign.files[0] ? await fileToBase64(form.sign.files[0]) : "";
+let admit64=form.admit.files[0] ? await fileToBase64(form.admit.files[0]) : "";
+let marksheet64=form.marksheet.files[0] ? await fileToBase64(form.marksheet.files[0]) : "";
+let doc64=form.doc.files[0] ? await fileToBase64(form.doc.files[0]) : "";
+
+let data={
+
+name:form.name.value,
+father:form.father.value,
+mother:form.mother.value,
+email:form.email.value,
+phone:form.phone.value,
+adhar:form.adhar.value,
+dob:form.dob.value,
+qualification:form.qualification.value,
+
+photo:photo64,
+sign:sign64,
+admit:admit64,
+marksheet:marksheet64,
+doc:doc64
+
+};
 
 fetch(scriptURL,{
 method:"POST",
-body:formData
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(data)
 })
-
-.then(res=>res.text())
-.then(data=>{
-
+.then(res=>res.json())
+.then(res=>{
 alert("Application Submitted Successfully");
-
 form.reset();
-
 })
-.catch(error=>{
-
+.catch(err=>{
 alert("Submission Error");
-
-console.log(error);
-
+console.log(err);
 });
 
 });
@@ -154,4 +183,5 @@ console.log(error);
 
 </body>
 </html>
+
 
