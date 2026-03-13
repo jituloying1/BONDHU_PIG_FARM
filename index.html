@@ -160,16 +160,59 @@ I declare that the information given above is correct.
 
 </div>
   <script>
+function doPost(e) {
 
-function fileToBase64(file){
-return new Promise((resolve,reject)=>{
-let reader = new FileReader();
-reader.readAsDataURL(file);
-reader.onload = ()=>resolve(reader.result);
-reader.onerror = error => reject(error);
-});
+var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
+
+var folder = DriveApp.getFolderById("YOUR_FOLDER_ID");
+
+var data = JSON.parse(e.postData.contents);
+
+function saveFile(base64Data, fileName){
+
+if(!base64Data){
+return "";
 }
 
+var parts = base64Data.split(",");
+var contentType = parts[0].match(/:(.*?);/)[1];
+var bytes = Utilities.base64Decode(parts[1]);
+
+var blob = Utilities.newBlob(bytes, contentType, fileName);
+var file = folder.createFile(blob);
+
+return file.getUrl();
+
+}
+
+var photoLink = saveFile(data.photo,"photo_"+data.name);
+var signLink = saveFile(data.sign,"sign_"+data.name);
+var admitLink = saveFile(data.admit,"admit_"+data.name);
+var marksheetLink = saveFile(data.marksheet,"marksheet_"+data.name);
+var docLink = saveFile(data.doc,"doc_"+data.name);
+
+sheet.appendRow([
+data.name,
+data.father,
+data.mother,
+data.email,
+data.phone,
+data.adhar,
+data.dob,
+data.applydate,
+data.qualification,
+photoLink,
+signLink,
+admitLink,
+marksheetLink,
+docLink
+]);
+
+return ContentService
+.createTextOutput(JSON.stringify({result:"success"}))
+.setMimeType(ContentService.MimeType.JSON);
+
+}
 async function submitForm(){
 
 let photo = photo.files[0] ? await fileToBase64(photo.files[0]) : "";
@@ -195,8 +238,11 @@ marksheet:marksheet,
 doc:doc
 };
 
-fetch("PASTE_SCRIPT_URL",{
+fetch("https://script.google.com/macros/s/AKfycbyUhWj8fPPOBADA4VIgBmuTllLeq1TW1i0w11A-3jmyNCW5I85w6gZySKHgv4ReXuuu/exec",{
 method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
 body:JSON.stringify(data)
 })
 .then(res=>res.json())
@@ -205,11 +251,12 @@ alert("Application Submitted Successfully");
 location.reload();
 })
 .catch(err=>{
+console.log(err);
 alert("Submit Error");
 });
-
 }
 </script>
 </body>
 </html>
+
 
