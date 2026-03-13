@@ -68,11 +68,11 @@ document.getElementById("jobForm").addEventListener("submit", async function(e){
     e.preventDefault();
     let form = this;
 
-    let photo64 = form.photo.files[0] ? await fileToBase64(form.photo.files[0]) : "";
-    let sign64 = form.sign.files[0] ? await fileToBase64(form.sign.files[0]) : "";
-    let admit64 = form.admit.files[0] ? await fileToBase64(form.admit.files[0]) : "";
-    let marksheet64 = form.marksheet.files[0] ? await fileToBase64(form.marksheet.files[0]) : "";
-    let doc64 = form.doc.files[0] ? await fileToBase64(form.doc.files[0]) : "";
+    let photo64 = form.photo.files[0] ? await fileToBase1000(form.photo.files[0]) : "";
+    let sign64 = form.sign.files[0] ? await fileToBase1000(form.sign.files[0]) : "";
+    let admit64 = form.admit.files[0] ? await fileToBase1000(form.admit.files[0]) : "";
+    let marksheet64 = form.marksheet.files[0] ? await fileToBase1000(form.marksheet.files[0]) : "";
+    let doc64 = form.doc.files[0] ? await fileToBase1000(form.doc.files[0]) : "";
 
     let data = {
         name: form.name.value,
@@ -83,11 +83,11 @@ document.getElementById("jobForm").addEventListener("submit", async function(e){
         adhar: form.adhar.value,
         dob: form.dob.value,
         qualification: form.qualification.value,
-        photo: photo64,
-        sign: sign64,
-        admit: admit64,
-        marksheet: marksheet64,
-        doc: doc64
+        photo: photo1000,
+        sign: sign1000,
+        admit: admit1000,
+        marksheet: marksheet1000,
+        doc: doc1000
     };
 
     fetch(scriptURL, {
@@ -109,6 +109,7 @@ document.getElementById("jobForm").addEventListener("submit", async function(e){
 
 </body>
 </html>
+
 
 
 
