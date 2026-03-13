@@ -129,46 +129,78 @@ background:#0056b3;
 </form>
 
 </div>
-
 <script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbzyLKXq7OLGSkKJRJ0cyGWlM6X0utHwYhoJd9ADSXGahR2GpONFG03w0EsLis3C3Trw/exec";
 
-const scriptURL="https://script.google.com/macros/s/AKfycbyTMyosGRCbiOeI6OX1sepijsMkGzCHAASsylLUFWWQlSST4pEde055gER7_M0wbXDV/exec";
+const form = document.getElementById("jobForm");
 
-const form=document.getElementById("jobForm");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-form.addEventListener("submit",e=>{
+  const formData = new FormData(form);
+  const files = ["photo","sign","admit","marksheet","doc"];
 
-e.preventDefault();
+  // Convert files to Base64
+  const base64Files = {};
+  for (let f of files) {
+    const file = formData.get(f);
+    if (file && file.size > 0) {
+      base64Files[f] = await fileToBase64(file);
+    } else {
+      base64Files[f] = "";
+    }
+  }
 
-let formData=new FormData(form);
+  // Prepare JSON payload
+  const data = {
+    name: formData.get("name"),
+    father: formData.get("father"),
+    mother: formData.get("mother"),
+    email: formData.get("email"),
+    phone: formData.get("phone"),
+    adhar: formData.get("adhar"),
+    dob: formData.get("dob"),
+    qualification: formData.get("qualification"),
+    gender: formData.get("gender"),
+    caste: formData.get("caste"),
+    photo: base64Files.photo,
+    sign: base64Files.sign,
+    admit: base64Files.admit,
+    marksheet: base64Files.marksheet,
+    doc: base64Files.doc
+  };
 
-fetch(scriptURL,{
-method:"POST",
-body:formData
-})
-
-.then(res=>res.text())
-.then(data=>{
-
-alert("Application Submitted Successfully");
-
-form.reset();
-
-})
-.catch(error=>{
-
-alert("Submission Error");
-
-console.log(error);
-
+  // Send JSON to Apps Script
+  fetch(scriptURL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert("Application Submitted Successfully");
+    form.reset();
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Submission Error");
+  });
 });
 
-});
-
+// Helper to convert file to Base64
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+    reader.readAsDataURL(file);
+  });
+}
 </script>
 
 </body>
 </html> 
+
 
 
 
