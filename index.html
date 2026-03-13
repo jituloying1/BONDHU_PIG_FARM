@@ -3,61 +3,20 @@
 <head>
 <title>Job Application System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <style>
-
-body{
-font-family:Arial;
-background:#f4f4f4;
-}
-
-.container{
-width:500px;
-margin:auto;
-background:white;
-padding:20px;
-margin-top:30px;
-border-radius:10px;
-box-shadow:0 0 10px gray;
-}
-
-h2{
-text-align:center;
-}
-
-input,select{
-width:100%;
-padding:8px;
-margin-top:5px;
-margin-bottom:15px;
-}
-
-button{
-width:100%;
-padding:12px;
-background:#007bff;
-color:white;
-border:none;
-font-size:16px;
-cursor:pointer;
-border-radius:5px;
-}
-
-button:hover{
-background:#0056b3;
-}
-
+body{font-family:Arial;background:#f4f4f4;}
+.container{width:500px;margin:auto;background:white;padding:20px;margin-top:30px;border-radius:10px;box-shadow:0 0 10px gray;}
+h2{text-align:center;}
+input,select{width:100%;padding:8px;margin-top:5px;margin-bottom:15px;}
+button{width:100%;padding:12px;background:#007bff;color:white;border:none;font-size:16px;cursor:pointer;border-radius:5px;}
+button:hover{background:#0056b3;}
 </style>
 </head>
-
 <body>
 
 <div class="container">
-
 <h2>Job Application Form</h2>
-
 <form id="jobForm">
-
 <label>Name</label>
 <input type="text" name="name" required>
 
@@ -80,18 +39,21 @@ background:#0056b3;
 <input type="date" name="dob">
 
 <label>Qualification</label>
-
 <select name="qualification">
-<option>10th</option>
-<option>XI</option>
-<option>XII</option>
-<option>BA</option>
-<option>BSC</option>
-<option>BCA</option>
-<option>BCOM</option>
-<option>MA</option>
-<option>MPHIL</option>
-<option>PHD</option>
+<option>10th</option><option>XI</option><option>XII</option><option>BA</option>
+<option>BSC</option><option>BCA</option><option>BCOM</option><option>MA</option>
+<option>MPHIL</option><option>PHD</option>
+</select>
+
+<label>Gender</label>
+<select name="gender">
+<option>Male</option><option>Female</option>
+</select>
+
+<label>Select Your Caste</label>
+<select name="caste">
+<option>ST-P</option><option>ST-H</option><option>OBC</option><option>GENERAL</option>
+<option>Tea-Gerden-living</option><option>Other</option>
 </select>
 
 <label>Passport Photo (Max 100KB)</label>
@@ -110,47 +72,76 @@ background:#0056b3;
 <input type="file" name="doc">
 
 <button type="submit">Submit Application</button>
-
 </form>
-
 </div>
 
 <script>
-
-const scriptURL="https://script.google.com/macros/s/AKfycbyTMyosGRCbiOeI6OX1sepijsMkGzCHAASsylLUFWWQlSST4pEde055gER7_M0wbXDV/exec";
+const scriptURL="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; // Replace with your Apps Script URL
 
 const form=document.getElementById("jobForm");
 
-form.addEventListener("submit",e=>{
+form.addEventListener("submit", async e=>{
+    e.preventDefault();
+    const formData = new FormData(form);
+    const files = ["photo","sign","admit","marksheet","doc"];
 
-e.preventDefault();
+    // File size validation
+    if(form.photo.files[0] && form.photo.files[0].size>100*1024){ alert("Photo max 100KB"); return; }
+    if(form.sign.files[0] && form.sign.files[0].size>50*1024){ alert("Signature max 50KB"); return; }
 
-let formData=new FormData(form);
+    // Convert files to Base64
+    const base64Files = {};
+    for(let f of files){
+        const file=formData.get(f);
+        base64Files[f] = file && file.size>0 ? await fileToBase64(file) : "";
+    }
 
-fetch(scriptURL,{
-method:"POST",
-body:formData
-})
+    // Prepare JSON
+    const data={
+        name: formData.get("name"),
+        father: formData.get("father"),
+        mother: formData.get("mother"),
+        email: formData.get("email"),
+        phone: formData.get("phone"),
+        adhar: formData.get("adhar"),
+        dob: formData.get("dob"),
+        qualification: formData.get("qualification"),
+        gender: formData.get("gender"),
+        caste: formData.get("caste"),
+        photo: base64Files.photo,
+        sign: base64Files.sign,
+        admit: base64Files.admit,
+        marksheet: base64Files.marksheet,
+        doc: base64Files.doc
+    };
 
-.then(res=>res.text())
-.then(data=>{
-
-alert("Application Submitted Successfully");
-
-form.reset();
-
-})
-.catch(error=>{
-
-alert("Submission Error");
-
-console.log(error);
-
+    // Send JSON
+    fetch(scriptURL,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify(data)
+    })
+    .then(res=>res.json())
+    .then(resp=>{
+        if(resp.result==="success"){ alert("Application Submitted Successfully"); form.reset(); }
+        else{ alert("Submission Error: "+resp.message); }
+    })
+    .catch(err=>{
+        console.error(err);
+        alert("Submission Error: Check console");
+    });
 });
 
-});
-
+// Convert file to Base64
+function fileToBase64(file){
+    return new Promise((resolve,reject)=>{
+        const reader=new FileReader();
+        reader.onload=()=>resolve(reader.result);
+        reader.onerror=error=>reject(error);
+        reader.readAsDataURL(file);
+    });
+}
 </script>
 
 </body>
-</html> 
+</html>
