@@ -121,36 +121,60 @@ const scriptURL="https://script.google.com/macros/s/AKfycbyTMyosGRCbiOeI6OX1sepi
 
 const form=document.getElementById("jobForm");
 
-form.addEventListener("submit",e=>{
+form.addEventListener("submit", async e => {
+  e.preventDefault();
 
-e.preventDefault();
+  const formData = new FormData(form);
+  const data = {
+    name: formData.get("name"),
+    father: formData.get("father"),
+    mother: formData.get("mother"),
+    email: formData.get("email"),
+    phone: formData.get("phone"),
+    adhar: formData.get("adhar"),
+    dob: formData.get("dob"),
+    qualification: formData.get("qualification"),
+    photo: "",
+    sign: "",
+    admit: "",
+    marksheet: "",
+    doc: ""
+  };
 
-let formData=new FormData(form);
+  async function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      if (!file) resolve("");
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
 
-fetch(scriptURL,{
-method:"POST",
-body:formData
-})
+  data.photo = await fileToBase64(formData.get("photo"));
+  data.sign = await fileToBase64(formData.get("sign"));
+  data.admit = await fileToBase64(formData.get("admit"));
+  data.marksheet = await fileToBase64(formData.get("marksheet"));
+  data.doc = await fileToBase64(formData.get("doc"));
 
-.then(res=>res.text())
-.then(data=>{
-
-alert("Application Submitted Successfully");
-
-form.reset();
-
-})
-.catch(error=>{
-
-alert("Submission Error");
-
-console.log(error);
-
-});
-
+  fetch(scriptURL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  })
+    .then(res => res.json())
+    .then(() => {
+      alert("Application Submitted Successfully");
+      form.reset();
+    })
+    .catch(err => {
+      console.log(err);
+      alert("Submission Error");
+    });
 });
 
 </script>
 
 </body>
 </html> 
+
