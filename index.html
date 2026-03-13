@@ -124,77 +124,163 @@ I declare that the information given above is correct.
 
 <button onclick="previewData()">Preview</button>
 
-</div> 
-  <script>
-function doPost(e) {
-
-var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
-
-// PUT YOUR GOOGLE DRIVE FOLDER ID HERE
-var folder = DriveApp.getFolderById("PASTE_FOLDER_ID_HERE");
-
-var data = JSON.parse(e.postData.contents);
+</div>
 
 
-// FUNCTION TO SAVE FILE
-function saveFile(base64Data, fileName){
+<div id="previewPage" class="preview">
 
-if(!base64Data) return "";
+<h2>Application Preview</h2>
 
-var parts = base64Data.split(",");
-var contentType = parts[0].match(/:(.*?);/)[1];
-var bytes = Utilities.base64Decode(parts[1]);
+<p><b>Name:</b> <span id="pname"></span></p>
+<p><b>Father:</b> <span id="pfather"></span></p>
+<p><b>Mother:</b> <span id="pmother"></span></p>
+<p><b>Email:</b> <span id="pemail"></span></p>
+<p><b>Phone:</b> <span id="pphone"></span></p>
+<p><b>Aadhar:</b> <span id="padhar"></span></p>
+<p><b>DOB:</b> <span id="pdob"></span></p>
+<p><b>Apply Date:</b> <span id="papply"></span></p>
+<p><b>Qualification:</b> <span id="pqualification"></span></p>
 
-var blob = Utilities.newBlob(bytes, contentType, fileName);
-var file = folder.createFile(blob);
+<p><b>Photo</b></p>
+<img id="pphoto">
 
-return file.getUrl();
+<p><b>Signature</b></p>
+<img id="psign">
+
+<p><b>Admit Card:</b> <span id="padmit"></span></p>
+<p><b>Marksheet:</b> <span id="pmarksheet"></span></p>
+
+<br>
+
+<button onclick="submitForm()">Submit Application</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+function previewData(){
+
+if(!document.getElementById("declaration").checked){
+alert("Please accept declaration");
+return;
+}
+
+formPage.style.display="none";
+previewPage.style.display="block";
+
+pname.innerText=name.value;
+pfather.innerText=father.value;
+pmother.innerText=mother.value;
+pemail.innerText=email.value;
+pphone.innerText=phone.value;
+padhar.innerText=adhar.value;
+pdob.innerText=dob.value;
+papply.innerText=applydate.value;
+pqualification.innerText=qualification.value;
+
+let photoFile = photo.files[0];
+let signFile = sign.files[0];
+
+if(photoFile){
+pphoto.src = URL.createObjectURL(photoFile);
+}
+
+if(signFile){
+psign.src = URL.createObjectURL(signFile);
+}
+
+if(admit.files[0]){
+padmit.innerText = admit.files[0].name;
+}
+
+if(marksheet.files[0]){
+pmarksheet.innerText = marksheet.files[0].name;
+}
 
 }
 
 
-// SAVE FILES
-var photoLink = saveFile(data.photo, "photo_"+data.name);
-var signLink = saveFile(data.sign, "sign_"+data.name);
-var admitLink = saveFile(data.admit, "admit_"+data.name);
-var marksheetLink = saveFile(data.marksheet, "marksheet_"+data.name);
-var docLink = saveFile(data.doc, "doc_"+data.name);
+
+function fileToBase64(file){
+return new Promise((resolve,reject)=>{
+
+let reader = new FileReader();
+
+reader.readAsDataURL(file);
+
+reader.onload=()=>resolve(reader.result);
+
+reader.onerror=error=>reject(error);
+
+});
+}
 
 
-// SAVE DATA TO SHEET
-sheet.appendRow([
-data.name,
-data.father,
-data.mother,
-data.email,
-data.phone,
-data.adhar,
-data.dob,
-data.applydate,
-data.qualification,
-photoLink,
-signLink,
-admitLink,
-marksheetLink,
-docLink
-]);
 
+async function submitForm(){
 
-return ContentService.createTextOutput(
-JSON.stringify({
-status:"success"
+let photo64 = photo.files[0] ? await fileToBase64(photo.files[0]) : "";
+let sign64 = sign.files[0] ? await fileToBase64(sign.files[0]) : "";
+let admit64 = admit.files[0] ? await fileToBase64(admit.files[0]) : "";
+let marksheet64 = marksheet.files[0] ? await fileToBase64(marksheet.files[0]) : "";
+let doc64 = doc.files[0] ? await fileToBase64(doc.files[0]) : "";
+
+let data={
+
+name:name.value,
+father:father.value,
+mother:mother.value,
+email:email.value,
+phone:phone.value,
+adhar:adhar.value,
+dob:dob.value,
+applydate:applydate.value,
+qualification:qualification.value,
+
+photo:photo64,
+sign:sign64,
+admit:admit64,
+marksheet:marksheet64,
+doc:doc64
+
+};
+
+fetch("https://script.google.com/macros/s/AKfycbyUhWj8fPPOBADA4VIgBmuTllLeq1TW1i0w11A-3jmyNCW5I85w6gZySKHgv4ReXuuu/exec",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify(data)
+
 })
-).setMimeType(ContentService.MimeType.JSON);
+
+.then(res=>res.json())
+
+.then(res=>{
+
+alert("Application Submitted Successfully");
+
+location.reload();
+
+})
+
+.catch(err=>{
+
+alert("Submit Error");
+
+console.log(err);
+
+});
 
 }
-  <script>
 
-
-}
 </script>
+
 </body>
 </html>
-
-
-
-
