@@ -1,115 +1,216 @@
-<!DOCTYPE html>
+[10:23 AM, 3/13/2026] jituloying1947: <!DOCTYPE html>
 <html>
 <head>
 <title>Job Application System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body{font-family:Arial;background:#f4f4f4;}
-.container{width:500px;margin:auto;background:white;padding:20px;margin-top:30px;border-radius:10px;box-shadow:0 0 10px gray;}
-h2{text-align:center;}
-input,select{width:100%;padding:8px;margin-top:5px;margin-bottom:15px;}
-button{width:100%;padding:12px;background:#007bff;color:white;border:none;font-size:16px;cursor:pointer;border-radius:5px;}
-button:hover{background:#0056b3;}
+
+body{
+font-family:Arial;
+background:#f4f4f4;
+}
+
+.container{
+width:500px;
+margin:auto;
+background:white;
+padding:20px;
+margin-top:30px;
+border-radius:10px;
+box-shadow:0 0 10px gray;
+}
+
+h2{
+text-align:center;
+}
+
+input,select{
+width:100%;
+padding:8px;
+margin-top:5px;
+margin-bottom:15px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#007bff;
+color:white;
+border:none;
+font-size:16px;
+cursor:pointer;
+border-radius:5px;
+}
+
+button:hover{
+background:#0056b3;
+}
+
 </style>
 </head>
+
 <body>
 
 <div class="container">
+
 <h2>Job Application Form</h2>
 
 <form id="jobForm">
+
 <label>Name</label>
 <input type="text" name="name" required>
+
 <label>Father Name</label>
 <input type="text" name="father" required>
+
 <label>Mother Name</label>
 <input type="text" name="mother">
+
 <label>Email</label>
 <input type="email" name="email" required>
+
 <label>Phone Number</label>
 <input type="text" name="phone" required>
+
 <label>Aadhar Number</label>
 <input type="text" name="adhar">
+
 <label>Date of Birth</label>
 <input type="date" name="dob">
+
 <label>Qualification</label>
+
 <select name="qualification">
-<option>10th</option><option>XI</option><option>XII</option><option>BA</option><option>BSC</option>
-<option>BCA</option><option>BCOM</option><option>MA</option><option>MPHIL</option><option>PHD</option>
+<option>10th</option>
+<option>XI</option>
+<option>XII</option>
+<option>BA</option>
+<option>BSC</option>
+<option>BCA</option>
+<option>BCOM</option>
+<option>MA</option>
+<option>MPHIL</option>
+<option>PHD</option>
 </select>
+
 <label>Passport Photo (Max 100KB)</label>
 <input type="file" name="photo" required>
+
 <label>Signature (Max 50KB)</label>
 <input type="file" name="sign">
+
 <label>Admit Card</label>
 <input type="file" name="admit">
+
 <label>Marksheet</label>
 <input type="file" name="marksheet">
+
 <label>Extra Document</label>
 <input type="file" name="doc">
+
 <button type="submit">Submit Application</button>
+
 </form>
+
 </div>
 
 <script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbwwFUOyza7j1Y20rN7TQQdSCqY8CuPKIYYTrhvBQowHW6J8oirga7o0jgN4xUzwKca9/exec";
 
-function fileToBase64(file){
-    return new Promise((resolve,reject)=>{
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = ()=>resolve(reader.result);
-        reader.onerror = err=>reject(err);
-    });
-}
+const scriptURL="https://script.google.com/macros/s/AKfycbyTMyosGRCbiOeI6OX1sepijsMkGzCHAASsylLUFWWQlSST4pEde055gER7_M0wbXDV/exec";
 
-document.getElementById("jobForm").addEventListener("submit", async function(e){
-    e.preventDefault();
-    let form = this;
+const form=document.getElementById("jobForm");
 
-    let photo64 = form.photo.files[0] ? await fileToBase1000(form.photo.files[0]) : "";
-    let sign64 = form.sign.files[0] ? await fileToBase1000(form.sign.files[0]) : "";
-    let admit64 = form.admit.files[0] ? await fileToBase1000(form.admit.files[0]) : "";
-    let marksheet64 = form.marksheet.files[0] ? await fileToBase1000(form.marksheet.files[0]) : "";
-    let doc64 = form.doc.files[0] ? await fileToBase1000(form.doc.files[0]) : "";
+form.addEventListener("submit",e=>{
 
-    let data = {
-        name: form.name.value,
-        father: form.father.value,
-        mother: form.mother.value,
-        email: form.email.value,
-        phone: form.phone.value,
-        adhar: form.adhar.value,
-        dob: form.dob.value,
-        qualification: form.qualification.value,
-        photo: photo1000,
-        sign: sign1000,
-        admit: admit1000,
-        marksheet: marksheet1000,
-        doc: doc1000
-    };
+e.preventDefault();
 
-    fetch(scriptURL, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(res => {
-        alert("Application Submitted Successfully");
-        form.reset();
-    })
-    .catch(err => {
-        alert("Submission Error");
-        console.log(err);
-    });
+let formData=new FormData(form);
+
+fetch(scriptURL,{
+method:"POST",
+body:formData
+})
+
+.then(res=>res.text())
+.then(data=>{
+
+alert("Application Submitted Successfully");
+
+form.reset();
+
+})
+.catch(error=>{
+
+alert("Submission Error");
+
+console.log(error);
+
 });
+
+});
+
 </script>
 
 </body>
-</html>
+</html>   corect code ....
+[10:23 AM, 3/13/2026] jituloying1947: function doPost(e){
 
+if(!e || !e.postData){
+return ContentService
+.createTextOutput("No POST data received");
+}
 
+var sheet = SpreadsheetApp
+.getActiveSpreadsheet()
+.getSheetByName("Sheet1");
 
+var folder = DriveApp
+.getFolderById("1--r4cL7DMJafZz6Z8K9XfZMTSM5T6Ibu");
 
+var data = JSON.parse(e.postData.contents);
+
+function saveFile(base64,name){
+
+if(!base64) return "";
+
+var parts = base64.split(",");
+var contentType = parts[0].match(/:(.*?);/)[1];
+var bytes = Utilities.base64Decode(parts[1]);
+
+var blob = Utilities.newBlob(bytes,contentType,name);
+
+var file = folder.createFile(blob);
+
+return file.getUrl();
+
+}
+
+var photoLink = saveFile(data.photo,"photo_"+data.name);
+var signLink = saveFile(data.sign,"sign_"+data.name);
+var admitLink = saveFile(data.admit,"admit_"+data.name);
+var marksheetLink = saveFile(data.marksheet,"marksheet_"+data.name);
+var docLink = saveFile(data.doc,"doc_"+data.name);
+
+sheet.appendRow([
+new Date(),
+data.name,
+data.father,
+data.mother,
+data.email,
+data.phone,
+data.adhar,
+data.dob,
+data.qualification,
+photoLink,
+signLink,
+admitLink,
+marksheetLink,
+docLink
+]);
+
+return ContentService
+.createTextOutput(JSON.stringify({result:"success"}))
+.setMimeType(ContentService.MimeType.JSON);
+
+}
