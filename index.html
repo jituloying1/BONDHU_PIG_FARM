@@ -1,308 +1,219 @@
-
-
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> WELCOME  TO ABC COLLAGE   </title>
-    <link rel="shortcut icon" href="C:\Users\jitul\Desktop\scholl\new\school.png"/>
-    <link rel="stylesheet" href="main.css">
-    <style>
-        /* Style for the modal (popup) */
-        #preview-modal {
-            display: none; /* Hidden by default */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1; /* In front of the content */
-        }
+<title>Job Application Form</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-        /* Modal content */
-        #modal-content {
-            background-color: white;
-            padding: 20px;
-            margin: 15% auto;
-            width: 60%;
-            max-width: 600px;
-            border-radius: 8px;
-        }
+<style>
 
-        /* Table styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+body{
+font-family:Arial;
+background:#f2f2f2;
+}
 
-        table, th, td {
-            border: 1px solid black;
-        }
+.container{
+width:500px;
+margin:auto;
+background:white;
+padding:20px;
+margin-top:40px;
+border-radius:10px;
+box-shadow:0 0 10px gray;
+}
 
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
+h2{
+text-align:center;
+}
 
-        button {
-            padding: 10px 20px;
-            margin: 10px;
-            cursor: pointer;
-        }
-    </style>
+input,select{
+width:100%;
+padding:8px;
+margin-top:5px;
+margin-bottom:15px;
+}
+
+button{
+padding:10px;
+background:green;
+color:white;
+border:none;
+width:100%;
+font-size:16px;
+cursor:pointer;
+}
+
+.preview{
+display:none;
+}
+
+img{
+width:120px;
+margin-top:10px;
+}
+
+</style>
 </head>
-<body >
-    <div class="main-container">
-        <h1>Welcome To Abc collage </h1>
-        <p>You are going to submit your data !</p>
-    </div>
 
-    <!-- Student Admission Form -->
-    <div class="form-container">
-        <h2> FILUP YOUR ALL DATA </h2>  
-        <form id="admissionForm" >
+<body>
 
-            <div class="input-group">
-                <label for="full_Name"> NAME OF THE STUDENTS :</label>
-                <input type="text" id="fullName"name="full_Name" required>
-            </div>
+<div class="container">
 
-            <div class="input-group">
-                <label for="dob">DATE OF BIRTH :</label>
-                <input type="date" id="dob" name="Date" required>
-            </div>
+<h2>Job Application Form</h2>
 
-            <div class="input-group">
-                <label for="gender">Gender:</label>
-                <select id="gender" name="gender" required>
-                    <option value="">--Select--</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
+<div id="formPage">
 
-            <div class="input-group">
-                <label for="email">YOUR MAIL ID  :</label>
-                <input type="email" id="email" name="email" required>
-            </div>
+<label>Name</label>
+<input type="text" id="name">
 
-            <div class="input-group">
-                <label for="phone">Phone Number:</label>
-                <input type="tel" id="phone" name="phone" required>
-            </div>
+<label>Father Name</label>
+<input type="text" id="father">
 
-            <div class="input-group">
-                <label for="class"> APPLYING FOR :</label>
-                <select id="class" name="class" required>
-                    <option value="">--Select Class--</option>
-                    <option value="Nursery">Nursery</option>
-                    <option value="LKG">LKG </option>
-                    <option value="UKG">UKG </option>
-                    <option value="1"> 1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">SEVEN</option>
-                    <option value="8">EIGHT</option>
-                    <option value="9">9</option>
-                    <option value="10">10TH</option>
-                    <option value="MODELING"> MODELING</option>
-                    <option value="NCC">NCC</option>
-                    <option value="IT ">IT </option>
-                    <option value="SPORTS">SPORTS</option>
-                    <option value="CALCTURAL">CALCTURAL</option>
-                    <option value="DROWING">DROWING</option>
-                </select>
-            </div>
+<label>Mother Name</label>
+<input type="text" id="mother">
 
-            <div class="input-group">
-                <label for="address"> FULL DESCRIPTION ABOUT  YOU </label>
-                <textarea id="address" name="address" required></textarea>
-            </div>
+<label>Email</label>
+<input type="email" id="email">
 
-            <!-- File Uploads -->
-            <div class="input-group">
-                <label for="photo">PHOTO OF THE STUDENTS :</label>
-                <input type="file" id="photo" name="photo" accept="image/*" required>
-            </div>
+<label>Phone Number</label>
+<input type="text" id="phone">
 
-            <div class="input-group"> 
-                <label for="signature">SIGNATURE OF THE STUDENTS :</label>
-                <input type="file" id="signature" name="signature" accept="image/*" required>
-            </div>
+<label>Aadhar Number</label>
+<input type="text" id="adhar">
 
-            <div class="input-group"> 
-                <label for="admit"> LAST ADMIT /BIRTH CERTIFICATE </label>
-                <input type="file" id="admit" name="admit" accept="image/*" required>
-            </div>
+<label>Date of Birth</label>
+<input type="date" id="dob">
 
+<label>Apply Date</label>
+<input type="date" id="applydate">
 
-            <!-- Preview and Submit Button -->
-            <div class="submit-btn">
-                <button type="button" id="preview-btn">Preview</button>
-            </div>
-        </form>
+<label>Qualification</label>
+<select id="qualification">
 
+<option>10th</option>
+<option>XI</option>
+<option>XII</option>
+<option>BA</option>
+<option>BSC</option>
+<option>BCA</option>
+<option>BCOM</option>
+<option>MA</option>
+<option>MPHIL</option>
+<option>PHD</option>
 
-        <script>
+</select>
 
-            
-    
-                  
-                  
-              
-                // Check if form data is being captured correctly
-            
-          </script>
+<label>Passport Size Photo</label>
+<input type="file" id="photo" accept="image/*">
 
+<label>Signature</label>
+<input type="file" id="sign" accept="image/*">
 
-<!-- Preview Modal (Popup) -->
-<div id="preview-modal">
-    <div id="modal-content">
-        <h3>Preview your information</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Field</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody id="preview-table-content">
-                <!-- Dynamic table content will go here -->
-            </tbody>
-        </table>
+<label>Admit Card Upload</label>
+<input type="file" id="admit">
 
-        <!-- Declaration Checkbox -->
-        <div style="margin-top: 15px;">
-            <input type="checkbox" id="declaration-checkbox" onchange="toggleConfirmButton()">
-            <label for="declaration-checkbox">
-                I hereby declare that all the information provided is true to the best of my knowledge.
-            </label>
-        </div>
+<label>Marksheet Upload</label>
+<input type="file" id="marksheet">
 
-        <button onclick="submitForm()">Confirm Submission</button>
-        <button onclick="editForm()">Edit</button>
-        <button onclick="closeModal()">Close</button>
-    </div>
+<label>Extra Supporting Document</label>
+<input type="file" id="doc">
+
+<label>
+<input type="checkbox" id="declaration">
+I declare that the information given above is correct.
+</label>
+
+<button onclick="previewData()">Preview</button>
+
+</div>
+
+<div id="previewPage" class="preview">
+
+<h2>Application Preview</h2>
+
+<p><b>Name:</b> <span id="pname"></span></p>
+<p><b>Father Name:</b> <span id="pfather"></span></p>
+<p><b>Mother Name:</b> <span id="pmother"></span></p>
+<p><b>Email:</b> <span id="pemail"></span></p>
+<p><b>Phone:</b> <span id="pphone"></span></p>
+<p><b>Aadhar:</b> <span id="padhar"></span></p>
+<p><b>DOB:</b> <span id="pdob"></span></p>
+<p><b>Apply Date:</b> <span id="papply"></span></p>
+<p><b>Qualification:</b> <span id="pqualification"></span></p>
+
+<p><b>Photo:</b></p>
+<img id="pphoto">
+
+<p><b>Signature:</b></p>
+<img id="psign">
+
+<p><b>Admit Card:</b></p>
+<p id="padmit"></p>
+
+<p><b>Marksheet:</b></p>
+<p id="pmarksheet"></p>
+
+<br><br>
+
+<button onclick="submitForm()">Submit Application</button>
+
+</div>
+
 </div>
 
 <script>
-    document.getElementById('preview-btn').addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent form submission
 
-        // Collect form data
-        const fullName = document.getElementById('fullName').value;
-        const dob = document.getElementById('dob').value;
-        const gender = document.getElementById('gender').value;
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        const classValue = document.getElementById('class').value;
-        const address = document.getElementById('address').value;
+function previewData(){
 
-        // Prepare table content for preview
-        let previewContent = `
-            <tr><td><strong>Full Name:</strong></td><td>${fullName}</td></tr>
-            <tr><td><strong>Date of Birth:</strong></td><td>${dob}</td></tr>
-            <tr><td><strong>Gender:</strong></td><td>${gender}</td></tr>
-            <tr><td><strong>Email Address:</strong></td><td>${email}</td></tr>
-            <tr><td><strong>Phone Number:</strong></td><td>${phone}</td></tr>
-            <tr><td><strong>Class Applying For:</strong></td><td>${classValue}</td></tr>
-            <tr><td><strong>Address:</strong></td><td>${address}</td></tr>
-        `;
+if(!document.getElementById("declaration").checked){
+alert("Please accept declaration");
+return;
+}
 
-        // Preview the photo
-        const photo = document.getElementById('photo').files[0];
-        const signature = document.getElementById('signature').files[0];
-        const admit = document.getElementById('admit').files[0];
+document.getElementById("formPage").style.display="none";
+document.getElementById("previewPage").style.display="block";
 
-        if (photo) {
-            previewContent += `
-                <tr><td><strong>Passport-size Photo:</strong></td><td><img src="${URL.createObjectURL(photo)}" alt="Photo Preview" width="100" height="100"></td></tr>
-            `;
-        }
-        if (signature) {
-            previewContent += `
-                <tr><td><strong>Signature:</strong></td><td><img src="${URL.createObjectURL(signature)}" alt="Signature Preview" width="100" height="100"></td></tr>
-            `;
-        }
-        if (admit) {
-            previewContent += `
-                <tr><td><strong>Admit:</strong></td><td><img src="${URL.createObjectURL(admit)}" alt="Admit Preview" width="100" height="100"></td></tr>
-            `;
-        }
+pname.innerText=name.value;
+pfather.innerText=father.value;
+pmother.innerText=mother.value;
+pemail.innerText=email.value;
+pphone.innerText=phone.value;
+padhar.innerText=adhar.value;
+pdob.innerText=dob.value;
+papply.innerText=applydate.value;
+pqualification.innerText=qualification.value;
 
-        // Populate the table with the preview content
-        document.getElementById('preview-table-content').innerHTML = previewContent;
+let photoFile = document.getElementById("photo").files[0];
+let signFile = document.getElementById("sign").files[0];
+let admitFile = document.getElementById("admit").files[0];
+let marksheetFile = document.getElementById("marksheet").files[0];
 
-        // Show the modal
-        document.getElementById('preview-modal').style.display = 'block';
-    });
+if(photoFile){
+pphoto.src = URL.createObjectURL(photoFile);
+}
 
-    async function submitForm() {
-        const form = document.getElementById('admissionForm');
-        const formData = new FormData(form);
-    
-        // Convert image files to base64
-        const toBase64 = file => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = reject;
-        });
-    
-        const photoFile = document.getElementById('photo').files[0];
-        const signatureFile = document.getElementById('signature').files[0];
-        const admitFile = document.getElementById('admit').files[0];
-    
-        // Add base64 versions to FormData
-        formData.append("photo", await toBase64(photoFile));
-        formData.append("signature", await toBase64(signatureFile));
-        formData.append("admit", await toBase64(admitFile));
-    
-        // Submit to Google Apps Script
-        fetch('https://script.google.com/macros/s/AKfycbwFJ6jm0KZJo9isrPDoiQ9AxkhJ6s96L1fUaqSyPMGitHc3EGPxcSiu89ra1D2LsEYxHw/exec', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            if (response.ok) {
-                alert("Form submitted successfully!");
-                form.reset();
-                closeModal();
-            } else {
-                alert("Form submission failed.");
-            }
-        })
-        .catch(error => {
-            alert("Error: " + error.message);
-            console.error(error);
-        });
-    }
-    
+if(signFile){
+psign.src = URL.createObjectURL(signFile);
+}
 
-    function editForm() {
-        document.getElementById('preview-modal').style.display = 'none';
-        document.querySelector('.form-container').style.display = 'block'; 
-    }
+if(admitFile){
+padmit.innerText = admitFile.name;
+}
 
-    function closeModal() {
-        document.getElementById('preview-modal').style.display = 'none'; 
-    }
+if(marksheetFile){
+pmarksheet.innerText = marksheetFile.name;
+}
 
-    function logout() {
-        window.location.href = "login.html"; 
-    }
+}
+
+function submitForm(){
+
+alert("Application Submitted Successfully");
+
+location.reload();
+
+}
+
 </script>
-
-      
-</body>
 
 </body>
 </html>
-
