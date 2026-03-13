@@ -87,32 +87,11 @@ cursor:pointer;
 <option>MA</option>
 </select>
 
-<label>Select State</label>
 <select id="state" onchange="loadDistricts()">
 <option>Select State</option>
 <option>Assam</option>
-<option>Arunachal Pradesh</option>
 <option>Bihar</option>
-<option>Delhi</option>
-<option>Goa</option>
-<option>Gujarat</option>
-<option>Haryana</option>
-<option>Jharkhand</option>
 <option>Karnataka</option>
-<option>Kerala</option>
-<option>Madhya Pradesh</option>
-<option>Maharashtra</option>
-<option>Manipur</option>
-<option>Meghalaya</option>
-<option>Nagaland</option>
-<option>Odisha</option>
-<option>Punjab</option>
-<option>Rajasthan</option>
-<option>Sikkim</option>
-<option>Tamil Nadu</option>
-<option>Telangana</option>
-<option>Tripura</option>
-<option>Uttar Pradesh</option>
 <option>West Bengal</option>
 </select>
 
@@ -153,7 +132,6 @@ cursor:pointer;
 
 </div>
 
-
 <script>
 
 const districts = {
@@ -168,11 +146,35 @@ const districts = {
 ],
 
 "Bihar":[
-"Patna","Gaya","Bhagalpur","Muzaffarpur","Darbhanga"
+"Araria","Arwal","Aurangabad","Banka","Begusarai","Bhagalpur",
+"Bhojpur","Buxar","Darbhanga","East Champaran","Gaya",
+"Gopalganj","Jamui","Jehanabad","Kaimur","Katihar",
+"Khagaria","Kishanganj","Lakhisarai","Madhepura",
+"Madhubani","Munger","Muzaffarpur","Nalanda",
+"Nawada","Patna","Purnia","Rohtas","Saharsa",
+"Samastipur","Saran","Sheikhpura","Sheohar",
+"Sitamarhi","Siwan","Supaul","Vaishali","West Champaran"
 ],
 
-"Delhi":[
-"Central Delhi","North Delhi","South Delhi"
+"Karnataka":[
+"Bagalkot","Ballari","Belagavi","Bengaluru Rural",
+"Bengaluru Urban","Bidar","Chamarajanagar",
+"Chikballapur","Chikkamagaluru","Chitradurga",
+"Dakshina Kannada","Davanagere","Dharwad",
+"Gadag","Hassan","Haveri","Kalaburagi",
+"Kodagu","Kolar","Koppal","Mandya",
+"Mysuru","Raichur","Ramanagara",
+"Shivamogga","Tumakuru","Udupi",
+"Uttara Kannada","Vijayapura","Yadgir"
+],
+
+"West Bengal":[
+"Alipurduar","Bankura","Birbhum","Cooch Behar",
+"Darjeeling","Hooghly","Howrah","Jalpaiguri",
+"Jhargram","Kalimpong","Kolkata","Malda",
+"Murshidabad","Nadia","North 24 Parganas",
+"Paschim Bardhaman","Purba Bardhaman",
+"Purulia","South 24 Parganas","Uttar Dinajpur"
 ]
 
 };
@@ -198,33 +200,7 @@ district.add(option);
 
 }
 
-function getPostOffice(){
-
-let pin=document.getElementById("pincode").value;
-
-fetch("https://api.postalpincode.in/pincode/"+pin)
-
-.then(response=>response.json())
-
-.then(data=>{
-
-if(data[0].Status=="Success"){
-
-document.getElementById("postoffice").value=data[0].PostOffice[0].Name;
-
-}
-
-else{
-
-document.getElementById("postoffice").value="Invalid Pincode";
-
-}
-
-});
-
-}
-
 </script>
-
 </body>
 </html>
+
